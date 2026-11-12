@@ -25,68 +25,108 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentObjectUrl = null;
   const ROLL_NUMBER_PATTERN = /^[A-Za-z0-9_-]{3,30}$/;
 
+  function triggerHaptic(type = 'light') {
+    if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
+      try {
+        if (type === 'light') navigator.vibrate(12);
+        else if (type === 'success') navigator.vibrate([15, 30, 20]);
+        else if (type === 'error') navigator.vibrate([30, 40, 30]);
+      } catch {}
+    }
+  }
+
   const canvas = document.getElementById('matrixCanvas');
   if (canvas) {
-    const ctx = canvas.getContext('2d');
-    let width = (canvas.width = window.innerWidth);
-    let height = (canvas.height = window.innerHeight);
+    try {
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        let width = (canvas.width = window.innerWidth);
+        let height = (canvas.height = window.innerHeight);
 
-    window.addEventListener('resize', () => {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
-      initColumns();
-    });
+        let resizeTimer = null;
+        window.addEventListener('resize', () => {
+          clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(() => {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            initColumns();
+          }, 100);
+        }, { passive: true });
 
-    const characters = '010101100101';
-    const fontSize = 14;
-    let columns = Math.floor(width / fontSize);
-    let drops = [];
+        const characters = '010101100101';
+        const fontSize = 14;
+        let columns = Math.max(1, Math.floor(width / fontSize));
+        let drops = [];
 
-    function initColumns() {
-      columns = Math.floor(width / fontSize);
-      drops = [];
-      for (let i = 0; i < columns; i++) {
-        drops[i] = Math.random() * -100;
-      }
-    }
-    initColumns();
+        function initColumns() {
+          columns = Math.max(1, Math.floor(width / fontSize));
+          drops = [];
+          for (let i = 0; i < columns; i++) {
+            drops[i] = Math.random() * -80;
+          }
+        }
+        initColumns();
 
-    let mouseX = width / 2;
-    let mouseY = height / 2;
-    window.addEventListener('mousemove', (e) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-    });
+        let pointerX = width / 2;
+        let pointerY = height / 2;
+        let pointerActive = false;
 
-    function drawMatrix() {
-      ctx.fillStyle = 'rgba(0, 12, 6, 0.15)';
-      ctx.fillRect(0, 0, width, height);
-
-      ctx.fillStyle = '#00e870';
-      ctx.font = `${fontSize}px "IBM Plex Mono", monospace`;
-
-      for (let i = 0; i < drops.length; i++) {
-        const text = characters.charAt(Math.floor(Math.random() * characters.length));
-        const x = i * fontSize;
-        const y = drops[i] * fontSize;
-
-        const dist = Math.hypot(x - mouseX, y - mouseY);
-        if (dist < 120) {
-          ctx.fillStyle = '#ffffff';
-        } else {
-          ctx.fillStyle = 'rgba(0, 232, 112, 0.45)';
+        function updatePointer(x, y) {
+          pointerX = x;
+          pointerY = y;
+          pointerActive = true;
         }
 
-        ctx.fillText(text, x, y);
+        window.addEventListener('mousemove', (e) => {
+          updatePointer(e.clientX, e.clientY);
+        }, { passive: true });
 
-        if (y > height && Math.random() > 0.985) {
-          drops[i] = 0;
+        window.addEventListener('touchmove', (e) => {
+          if (e.touches && e.touches.length > 0) {
+            updatePointer(e.touches[0].clientX, e.touches[0].clientY);
+          }
+        }, { passive: true });
+
+        window.addEventListener('touchstart', (e) => {
+          if (e.touches && e.touches.length > 0) {
+            updatePointer(e.touches[0].clientX, e.touches[0].clientY);
+          }
+        }, { passive: true });
+
+        window.addEventListener('touchend', () => {
+          pointerActive = false;
+        }, { passive: true });
+
+        function drawMatrix() {
+          ctx.fillStyle = 'rgba(0, 12, 6, 0.16)';
+          ctx.fillRect(0, 0, width, height);
+
+          ctx.font = `${fontSize}px "IBM Plex Mono", monospace`;
+
+          for (let i = 0; i < drops.length; i++) {
+            const text = characters.charAt(Math.floor(Math.random() * characters.length));
+            const x = i * fontSize;
+            const y = drops[i] * fontSize;
+
+            const dist = pointerActive ? Math.hypot(x - pointerX, y - pointerY) : 999;
+            if (dist < 100) {
+              ctx.fillStyle = '#ffffff';
+            } else {
+              ctx.fillStyle = 'rgba(0, 232, 112, 0.45)';
+            }
+
+            ctx.fillText(text, x, y);
+
+            if (y > height && Math.random() > 0.985) {
+              drops[i] = 0;
+            }
+            drops[i]++;
+          }
+          requestAnimationFrame(drawMatrix);
         }
-        drops[i]++;
+        requestAnimationFrame(drawMatrix);
       }
-      requestAnimationFrame(drawMatrix);
-    }
-    requestAnimationFrame(drawMatrix);
+    } catch {}
   }
 
   if (terminalCard) {
@@ -94,24 +134,53 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentY = 0;
     let targetX = 0;
     let targetY = 0;
+    const maxTilt = 8;
 
-    window.addEventListener('mousemove', (e) => {
+    function handlePointerTilt(clientX, clientY) {
       const rect = terminalCard.getBoundingClientRect();
       const cardCenterX = rect.left + rect.width / 2;
       const cardCenterY = rect.top + rect.height / 2;
 
-      const normX = (e.clientX - cardCenterX) / (window.innerWidth / 2);
-      const normY = (e.clientY - cardCenterY) / (window.innerHeight / 2);
+      const normX = (clientX - cardCenterX) / (window.innerWidth / 2);
+      const normY = (clientY - cardCenterY) / (window.innerHeight / 2);
 
-      const maxTilt = 6;
-      targetX = -normY * maxTilt;
-      targetY = normX * maxTilt;
-    });
+      const clampedX = Math.max(-1, Math.min(1, normX));
+      const clampedY = Math.max(-1, Math.min(1, normY));
+
+      targetX = -clampedY * maxTilt;
+      targetY = clampedX * maxTilt;
+    }
+
+    window.addEventListener('mousemove', (e) => {
+      handlePointerTilt(e.clientX, e.clientY);
+    }, { passive: true });
+
+    window.addEventListener('touchmove', (e) => {
+      if (e.touches && e.touches.length > 0) {
+        handlePointerTilt(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    }, { passive: true });
+
+    window.addEventListener('touchend', () => {
+      targetX = 0;
+      targetY = 0;
+    }, { passive: true });
 
     window.addEventListener('mouseleave', () => {
       targetX = 0;
       targetY = 0;
     });
+
+    if (window.DeviceOrientationEvent) {
+      window.addEventListener('deviceorientation', (e) => {
+        if (e.gamma !== null && e.beta !== null) {
+          const tiltY = Math.max(-20, Math.min(20, e.gamma)) / 20;
+          const tiltX = (Math.max(15, Math.min(65, e.beta)) - 40) / 25;
+          targetX = -tiltX * maxTilt;
+          targetY = tiltY * maxTilt;
+        }
+      }, { passive: true });
+    }
 
     function updateCardTilt() {
       currentX += (targetX - currentX) * 0.08;
@@ -130,7 +199,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const originalText = el.getAttribute('data-scramble');
     let interval = null;
 
-    el.addEventListener('mouseenter', () => {
+    function triggerScramble() {
       let iteration = 0;
       clearInterval(interval);
 
@@ -152,7 +221,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         iteration += 1 / 2;
       }, 25);
-    });
+    }
+
+    el.addEventListener('mouseenter', triggerScramble);
+    el.addEventListener('pointerdown', triggerScramble, { passive: true });
   });
 
   async function checkGatewayHealth() {
@@ -213,6 +285,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     errorState.classList.remove('hidden');
+    triggerHaptic('error');
   }
 
   function showResult(blob, rollNumber) {
@@ -228,6 +301,7 @@ document.addEventListener('DOMContentLoaded', () => {
     openNewTabBtn.href = currentObjectUrl;
 
     resultState.classList.remove('hidden');
+    triggerHaptic('success');
   }
 
   function setLoading(isLoading) {
@@ -262,6 +336,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateClearButton();
     rollNumberInput.focus();
     resetStates();
+    triggerHaptic('light');
   });
 
   searchForm.addEventListener('submit', async (e) => {
@@ -292,6 +367,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     setLoading(true);
+    triggerHaptic('light');
 
     try {
       const response = await fetch(`/api/profile/${encodeURIComponent(trimmedRoll)}`);
