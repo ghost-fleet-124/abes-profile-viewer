@@ -1,0 +1,25 @@
+{
+  "name": "abes-profile-viewer",
+  "version": "1.0.0",
+  "description": "ABES Student Profile Viewer - Secure ERP Profile Photo Gateway",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test/api.test.js"
+  },
+  "keywords": [
+    "abes",
+    "student-profile",
+    "erp-proxy",
+    "express"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
