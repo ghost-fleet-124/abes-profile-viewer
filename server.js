@@ -9,6 +9,7 @@ const app = express();
 
 // Configuration
 const PORT = parseInt(process.env.PORT, 10) || 3000;
+const HOST = process.env.HOST || '0.0.0.0';
 const ERP_BASE_URL = process.env.ERP_BASE_URL || 'https://erp.abes.ac.in/Services/ProfilePic.aspx';
 const ERP_LOGIN_URL = process.env.ERP_LOGIN_URL || 'https://erp.abes.ac.in/Login.aspx';
 const ERP_KEEPALIVE_URL = process.env.ERP_KEEPALIVE_URL || 'https://erp.abes.ac.in/Home/Student/Default.aspx';
@@ -965,8 +966,9 @@ app.use((err, req, res, next) => {
 // Start server only when executed directly (allows clean testing & importing)
 let server = null;
 if (require.main === module) {
-  server = app.listen(PORT, () => {
+  server = app.listen(PORT, HOST, () => {
     console.log(`====================================================`);
+    console.log(` ABES Student Profile Viewer running on http://${HOST}:${PORT}`);
     const hasUserPass = Boolean(process.env.ERP_USERNAME && process.env.ERP_PASSWORD);
     const hasCookies = Boolean(process.env.ERP_MYAUTH && process.env.ERP_ASP_NET_SESSION_ID);
     console.log(` Credentials configured: ${hasUserPass ? 'USERNAME/PASSWORD' : hasCookies ? 'SESSION COOKIES' : 'NONE'}`);
@@ -975,6 +977,27 @@ if (require.main === module) {
     console.log(`====================================================`);
     startKeepAliveScheduler();
   });
+
+  // Graceful shutdown handling for container platforms (Railway, Render, Docker)
+  const shutdown = (signal) => {
+    console.log(`[Server] Received ${signal}. Starting graceful shutdown...`);
+    stopKeepAliveScheduler();
+    if (server) {
+      server.close(() => {
+        console.log('[Server] HTTP server closed gracefully.');
+        process.exit(0);
+      });
+      setTimeout(() => {
+        console.error('[Server] Forced shutdown after timeout.');
+        process.exit(1);
+      }, 5000).unref();
+    } else {
+      process.exit(0);
+    }
+  };
+
+  process.on('SIGTERM', () => shutdown('SIGTERM'));
+  process.on('SIGINT', () => shutdown('SIGINT'));
 }
 
 module.exports = {
