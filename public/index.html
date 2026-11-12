@@ -5,26 +5,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="color-scheme" content="dark">
-  <meta name="theme-color" content="#000c06">
+  <meta name="theme-color" content="#030608">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>ABES Student Profile Viewer // ERP Gateway</title>
-  <meta name="description" content="Minimalist terminal gateway to view verified ABES student profiles with authorized ERP proxy.">
-  <link rel="stylesheet" href="style.css?v=4.0">
+  <title>Ghost Fleet // ABES Student Profile Viewer // ERP Gateway</title>
+  <meta name="description" content="Ghost Fleet ABES Student Profile Viewer // Supernatural digital fleet gateway to verify and inspect institutional student dossiers via encrypted proxy telemetry.">
+  <link rel="icon" type="image/jpeg" href="assets/ghost-fleet-logo.jpg">
+  <link rel="stylesheet" href="style.css?v=5.0">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:ital,wght@1,600;1,700;1,800;1,900&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
   <canvas id="matrixCanvas"></canvas>
 
   <div class="terminal-shell">
     <header class="terminal-header">
-      <div class="terminal-identity">
-        <span class="sys-tag">[ ABES_SYS // v2.4 ]</span>
-        <span class="sys-sub">ERP_GATEWAY</span>
+      <div class="brand-cluster">
+        <img src="assets/ghost-fleet-logo.jpg" alt="Ghost Fleet Helm Logo" class="brand-logo" width="46" height="46" />
+        <div class="brand-text">
+          <span class="brand-title">Ghost Fleet</span>
+          <span class="brand-tag">ERP_GATEWAY // FLEET_0x7F</span>
+        </div>
       </div>
-      <div id="systemStatus" class="status-pill" title="System Gateway Status" role="status">
+
+      <div id="systemStatus" class="status-pill" title="System Gateway Radar" role="status">
         <span class="status-dot"></span>
         <span class="status-label">INITIALIZING...</span>
       </div>
@@ -33,11 +38,11 @@
     <div class="hero-block">
       <div class="availability-chip">
         <span class="chip-dot"></span>
-        <span class="chip-text">AUTHORIZED ERP PROTOCOL</span>
+        <span class="chip-text">SUPERNATURAL CORSAIR PROTOCOL</span>
       </div>
       <h1 class="hero-title" data-scramble="ACCESS STUDENT ARCHIVES">ACCESS STUDENT ARCHIVES</h1>
       <p class="hero-subtitle">
-        High-performance direct gateway to verify and inspect institutional student records via authenticated server-side ERP proxy.
+        High-performance spectral gateway navigating institutional waters to intercept, verify, and inspect student records via encrypted server-side proxy telemetry.
       </p>
     </div>
 
@@ -51,14 +56,14 @@
         <div class="terminal-dots">
           <span class="terminal-dot red"></span>
           <span class="terminal-dot yellow"></span>
-          <span class="terminal-dot green"></span>
+          <span class="terminal-dot cyan"></span>
         </div>
-        <span class="terminal-bar-title">QUERY_CONSOLE // ROLL_LOOKUP</span>
+        <span class="terminal-bar-title">NAV_CONSOLE // ROLL_LOOKUP // FREQ_0x7F</span>
       </div>
 
       <form id="searchForm" class="terminal-form" novalidate>
         <div class="input-row">
-          <label for="rollNumberInput" class="input-prompt">&gt; ROLL_ID:</label>
+          <label for="rollNumberInput" class="input-prompt">&gt; VESSEL_ID / ROLL:</label>
           <div class="input-wrapper">
             <input 
               type="text" 
@@ -88,15 +93,15 @@
         <div class="terminal-loader">
           <div class="loader-bar"></div>
         </div>
-        <p class="loader-text">&gt; ESTABLISHING ERP TUNNEL... FETCHING DOSSIER</p>
+        <p class="loader-text">&gt; ESTABLISHING OCEAN TUNNEL... DECODING MANIFEST</p>
       </div>
 
       <div id="errorState" class="terminal-state error-state hidden" role="alert" aria-live="assertive">
-        <div class="error-badge">[ TERMINAL_EXCEPTION ]</div>
-        <h3 id="errorTitle" class="error-title">REQUEST FAILED</h3>
-        <p id="errorMessage" class="error-message">An unexpected communication error occurred.</p>
+        <div class="error-badge">[ CORSAIR_EXCEPTION ]</div>
+        <h3 id="errorTitle" class="error-title">TRANSMISSION FAILED</h3>
+        <p id="errorMessage" class="error-message">An unexpected communication error occurred in the fleet proxy.</p>
         <div id="adminTip" class="admin-tip hidden">
-          &gt; SYSTEM NOTICE: ERP session credentials require renewal. Update server-side session cookies.
+          &gt; FLEET NOTICE: ERP session credentials require renewal. Update server-side session cookies.
         </div>
       </div>
 
@@ -109,14 +114,14 @@
             </div>
             <div class="photo-badge">
               <span class="badge-dot"></span>
-              <span>VERIFIED_ERP</span>
+              <span>VERIFIED_MANIFEST</span>
             </div>
           </div>
 
           <div class="meta-container">
             <div class="meta-header">
               <span class="meta-title">STUDENT DOSSIER</span>
-              <span class="meta-tag">RECORD_FOUND</span>
+              <span class="meta-tag">RECORD_INTERCEPTED</span>
             </div>
 
             <div class="meta-table">
@@ -130,7 +135,7 @@
               </div>
               <div class="meta-row">
                 <span class="meta-key">GATEWAY</span>
-                <span class="meta-val">DIRECT_SECURE_TUNNEL</span>
+                <span class="meta-val">DEEP_OCEAN_PROXY</span>
               </div>
               <div class="meta-row">
                 <span class="meta-key">DELIVERY</span>
@@ -140,10 +145,10 @@
 
             <div class="action-row">
               <a id="downloadBtn" href="#" download="student-profile.jpg" class="btn btn-secondary">
-                [ EXPORT IMAGE ]
+                [ EXPORT MANIFEST ]
               </a>
               <a id="openNewTabBtn" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
-                [ OPEN FULL ]
+                [ FULL TELEMETRY ]
               </a>
             </div>
           </div>
@@ -153,16 +158,16 @@
 
     <footer class="terminal-footer">
       <div class="footer-meta">
-        <span class="meta-lock">ENCRYPTED_PROXY</span>
+        <span class="meta-lock">GHOST_FLEET_CORSAIR</span>
         <span class="meta-copy">ABES ENGINEERING COLLEGE &bull; ALL RIGHTS RESERVED</span>
       </div>
       <div class="footer-links">
-        <span class="footer-tag">STATUS: 200_ONLINE</span>
-        <span class="footer-tag">NODE_EXPRESS_ENGINE</span>
+        <span class="footer-tag">RADAR: 200_ONLINE</span>
+        <span class="footer-tag">QUANTUM_NODE_ENGINE</span>
       </div>
     </footer>
   </div>
 
-  <script src="app.js?v=4.0"></script>
+  <script src="app.js?v=5.0"></script>
 </body>
 </html>

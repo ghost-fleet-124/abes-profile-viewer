@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
           }, 100);
         }, { passive: true });
 
-        const characters = '010101100101';
+        const nauticalRunes = ['0', '1', '0', '1', '1', '0', '⎈', '⚓', '0x', '7F', '1', '0'];
         const fontSize = 14;
         let columns = Math.max(1, Math.floor(width / fontSize));
         let drops = [];
@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
           columns = Math.max(1, Math.floor(width / fontSize));
           drops = [];
           for (let i = 0; i < columns; i++) {
-            drops[i] = Math.random() * -60;
+            drops[i] = Math.random() * -70;
           }
         }
         initColumns();
@@ -99,11 +99,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         function drawMatrix() {
           ctx.clearRect(0, 0, width, height);
-
           ctx.font = `${fontSize}px "IBM Plex Mono", monospace`;
 
           for (let i = 0; i < drops.length; i++) {
-            const text = characters.charAt(Math.floor(Math.random() * characters.length));
+            const text = nauticalRunes[Math.floor(Math.random() * nauticalRunes.length)];
             const x = i * fontSize;
             const y = drops[i] * fontSize;
 
@@ -111,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (dist < 90) {
               ctx.fillStyle = '#ffffff';
             } else {
-              ctx.fillStyle = 'rgba(0, 232, 112, 0.45)';
+              ctx.fillStyle = 'rgba(0, 229, 212, 0.45)';
             }
 
             ctx.fillText(text, x, y);
@@ -166,7 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const scrambleElements = document.querySelectorAll('[data-scramble]');
-  const scrambleChars = '010101ABCDEF#$<>[]';
+  const scrambleChars = '010101ABCDEF#$<>[]*⚓⎈';
 
   scrambleElements.forEach((el) => {
     const originalText = el.getAttribute('data-scramble');
@@ -208,16 +207,16 @@ document.addEventListener('DOMContentLoaded', () => {
         if (data.sessionConfigured) {
           if (data.erpSession === 'active') {
             systemStatus.className = 'status-pill status-online';
-            statusLabel.textContent = 'ONLINE // ACTIVE';
+            statusLabel.textContent = 'RADAR ONLINE // ACTIVE';
           } else if (data.erpSession === 'expired') {
             systemStatus.className = 'status-pill status-warning';
             statusLabel.textContent = 'SESSION EXPIRED';
           } else if (data.erpSession === 'temporarily_unavailable') {
             systemStatus.className = 'status-pill status-warning';
-            statusLabel.textContent = 'GATEWAY BUSY';
+            statusLabel.textContent = 'FLEET BUSY';
           } else {
             systemStatus.className = 'status-pill status-online';
-            statusLabel.textContent = 'CONFIGURED';
+            statusLabel.textContent = 'FLEET CONFIGURED';
           }
         } else {
           systemStatus.className = 'status-pill status-warning';
@@ -228,7 +227,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     } catch {
       systemStatus.className = 'status-pill status-offline';
-      statusLabel.textContent = 'OFFLINE';
+      statusLabel.textContent = 'RADAR OFFLINE';
     }
   }
 
@@ -270,7 +269,7 @@ document.addEventListener('DOMContentLoaded', () => {
     displayRoll.textContent = rollNumber;
 
     downloadBtn.href = currentObjectUrl;
-    downloadBtn.download = `ABES_${rollNumber}.jpg`;
+    downloadBtn.download = `GHOST_FLEET_${rollNumber}.jpg`;
     openNewTabBtn.href = currentObjectUrl;
 
     resultState.classList.remove('hidden');
@@ -280,7 +279,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function setLoading(isLoading) {
     if (isLoading) {
       searchBtn.disabled = true;
-      searchBtn.querySelector('.btn-text').textContent = 'QUERYING...';
+      searchBtn.querySelector('.btn-text').textContent = 'INTERCEPTING...';
       loadingState.classList.remove('hidden');
       errorState.classList.add('hidden');
       resultState.classList.add('hidden');
@@ -350,7 +349,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const imageBlob = await response.blob();
         showResult(imageBlob, trimmedRoll);
         systemStatus.className = 'status-pill status-online';
-        statusLabel.textContent = 'ONLINE // ACTIVE';
+        statusLabel.textContent = 'RADAR ONLINE // ACTIVE';
       } else {
         let errData = {};
         try {
