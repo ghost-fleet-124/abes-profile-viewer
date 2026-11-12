@@ -5,169 +5,158 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="color-scheme" content="dark">
-  <meta name="theme-color" content="#030608">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>Ghost Fleet // ABES Student Profile Viewer // ERP Gateway</title>
-  <meta name="description" content="Ghost Fleet ABES Student Profile Viewer // Supernatural digital fleet gateway to verify and inspect institutional student dossiers via encrypted proxy telemetry.">
+  <meta name="theme-color" content="#090B0D">
+  <title>Ghost Fleet — Profile Picture Finder</title>
+  <meta name="description" content="Professional profile picture search tool by Ghost Fleet. Enter any student roll number or supported identifier to query and view registered profile photos.">
   <link rel="icon" type="image/jpeg" href="assets/ghost-fleet-logo.jpg">
-  <link rel="stylesheet" href="style.css?v=5.0">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:ital,wght@1,600;1,700;1,800;1,900&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:ital,wght@1,600;1,700;1,800&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=8.0">
 </head>
 <body>
-  <canvas id="matrixCanvas"></canvas>
+  <canvas id="ambientCanvas"></canvas>
 
-  <div class="terminal-shell">
-    <header class="terminal-header">
-      <div class="brand-cluster">
-        <img src="assets/ghost-fleet-logo.jpg" alt="Ghost Fleet Helm Logo" class="brand-logo" width="46" height="46" />
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand-group">
+        <img src="assets/ghost-fleet-logo.jpg" alt="Ghost Fleet Logo" class="brand-logo" width="34" height="34">
         <div class="brand-text">
-          <span class="brand-title">Ghost Fleet</span>
-          <span class="brand-tag">ERP_GATEWAY // FLEET_0x7F</span>
+          <span class="brand-name">Ghost Fleet</span>
+          <span class="brand-badge">PROFILE LOOKUP</span>
         </div>
       </div>
 
-      <div id="systemStatus" class="status-pill" title="System Gateway Radar" role="status">
+      <div id="systemStatus" class="status-indicator" role="status" title="System Gateway Health">
         <span class="status-dot"></span>
-        <span class="status-label">INITIALIZING...</span>
+        <span class="status-label">RADAR ONLINE</span>
       </div>
-    </header>
-
-    <div class="hero-block">
-      <div class="availability-chip">
-        <span class="chip-dot"></span>
-        <span class="chip-text">SUPERNATURAL CORSAIR PROTOCOL</span>
-      </div>
-      <h1 class="hero-title" data-scramble="ACCESS STUDENT ARCHIVES">ACCESS STUDENT ARCHIVES</h1>
-      <p class="hero-subtitle">
-        High-performance spectral gateway navigating institutional waters to intercept, verify, and inspect student records via encrypted server-side proxy telemetry.
-      </p>
     </div>
+  </header>
 
-    <main id="terminalCard" class="terminal-card">
-      <div class="corner-reticle top-left">+</div>
-      <div class="corner-reticle top-right">+</div>
-      <div class="corner-reticle bottom-left">+</div>
-      <div class="corner-reticle bottom-right">+</div>
-
-      <div class="terminal-bar">
-        <div class="terminal-dots">
-          <span class="terminal-dot red"></span>
-          <span class="terminal-dot yellow"></span>
-          <span class="terminal-dot cyan"></span>
+  <main class="viewport-stage">
+    <div id="terminalCard" class="search-card">
+      <div class="card-header">
+        <div class="card-eyebrow">
+          <span class="eyebrow-dot"></span>
+          <span>RECORD RETRIEVAL GATEWAY</span>
         </div>
-        <span class="terminal-bar-title">NAV_CONSOLE // ROLL_LOOKUP // FREQ_0x7F</span>
+        <h1 class="card-title">Profile Picture Finder</h1>
+        <p class="card-desc">
+          Enter a profile username, roll number, or supported identifier to query and inspect the registered profile picture.
+        </p>
       </div>
 
-      <form id="searchForm" class="terminal-form" novalidate>
-        <div class="input-row">
-          <label for="rollNumberInput" class="input-prompt">&gt; VESSEL_ID / ROLL:</label>
-          <div class="input-wrapper">
+      <form id="searchForm" class="search-form" novalidate>
+        <div class="input-field-group">
+          <label for="rollNumberInput" class="input-label">PROFILE IDENTIFIER / ROLL NUMBER</label>
+          <div class="input-control">
+            <svg class="search-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M9 17A8 8 0 1 0 9 1a8 8 0 0 0 0 16zM19 19l-4.35-4.35" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
             <input 
               type="text" 
               id="rollNumberInput" 
-              name="rollNumber"
-              class="terminal-input" 
-              placeholder="Enter student roll number" 
+              name="rollNumber" 
+              class="search-input" 
+              placeholder="e.g. 2025B01010618" 
               autocomplete="off" 
-              spellcheck="false"
-              maxlength="30"
+              spellcheck="false" 
+              maxlength="30" 
               required 
               autofocus
-            />
-            <button type="button" id="clearBtn" class="clear-btn hidden" aria-label="Clear input">[CLR]</button>
+            >
+            <button type="button" id="clearBtn" class="clear-button hidden" aria-label="Clear input">✕</button>
           </div>
+          <span class="input-hint">Supported: Student roll numbers, institutional IDs, and alphanumeric profile handles.</span>
         </div>
 
-        <div class="form-actions">
-          <button type="submit" id="searchBtn" class="btn btn-primary" data-scramble="INITIATE QUERY">
-            <span class="btn-text">INITIATE QUERY</span>
-            <span class="btn-bracket">&gt;&gt;</span>
-          </button>
-        </div>
+        <button type="submit" id="searchBtn" class="search-submit-btn">
+          <span class="btn-text">Search Profile</span>
+          <svg class="btn-arrow" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3.33 8h9.34M8.67 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
       </form>
 
-      <div id="loadingState" class="terminal-state loading-state hidden" aria-live="polite">
-        <div class="terminal-loader">
-          <div class="loader-bar"></div>
+      <div id="loadingState" class="state-container state-loading hidden" aria-live="polite">
+        <div class="loader-track">
+          <div class="loader-indicator"></div>
         </div>
-        <p class="loader-text">&gt; ESTABLISHING OCEAN TUNNEL... DECODING MANIFEST</p>
+        <p class="state-text">Querying gateway record...</p>
       </div>
 
-      <div id="errorState" class="terminal-state error-state hidden" role="alert" aria-live="assertive">
-        <div class="error-badge">[ CORSAIR_EXCEPTION ]</div>
-        <h3 id="errorTitle" class="error-title">TRANSMISSION FAILED</h3>
-        <p id="errorMessage" class="error-message">An unexpected communication error occurred in the fleet proxy.</p>
-        <div id="adminTip" class="admin-tip hidden">
-          &gt; FLEET NOTICE: ERP session credentials require renewal. Update server-side session cookies.
+      <div id="errorState" class="state-container state-error hidden" role="alert" aria-live="assertive">
+        <div class="error-badge">EXCEPTION</div>
+        <h3 id="errorTitle" class="error-heading">Profile Not Found</h3>
+        <p id="errorMessage" class="error-detail">The requested identifier could not be resolved by the server.</p>
+        <div id="adminTip" class="admin-notice hidden">
+          Notice: ERP session cookies may be expired. Update server credentials.
         </div>
       </div>
 
-      <div id="resultState" class="terminal-state result-state hidden">
-        <div class="dossier-grid">
-          <div class="photo-container">
-            <div class="photo-scanline-wrap">
-              <img id="profileImage" src="" alt="Verified Student Profile Photo" class="student-photo" />
-              <div class="scanlines"></div>
-            </div>
-            <div class="photo-badge">
-              <span class="badge-dot"></span>
-              <span>VERIFIED_MANIFEST</span>
-            </div>
+      <div id="resultState" class="state-container state-result hidden">
+        <div class="result-layout">
+          <div class="profile-preview-box">
+            <img id="profileImage" src="" alt="Retrieved Profile Picture" class="profile-img">
+            <div class="preview-badge">VERIFIED RECORD</div>
           </div>
 
-          <div class="meta-container">
-            <div class="meta-header">
-              <span class="meta-title">STUDENT DOSSIER</span>
-              <span class="meta-tag">RECORD_INTERCEPTED</span>
+          <div class="result-details">
+            <div class="meta-item">
+              <span class="meta-label">IDENTIFIER</span>
+              <span id="displayRoll" class="meta-value"></span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">STATUS</span>
+              <span class="meta-value success">200 OK / IMAGE RETRIEVED</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">FORMAT</span>
+              <span class="meta-value">JPEG IMAGE STREAM</span>
             </div>
 
-            <div class="meta-table">
-              <div class="meta-row">
-                <span class="meta-key">IDENTIFIER</span>
-                <span id="displayRoll" class="meta-val"></span>
-              </div>
-              <div class="meta-row">
-                <span class="meta-key">STATUS</span>
-                <span class="meta-val highlight">200_AUTHENTICATED</span>
-              </div>
-              <div class="meta-row">
-                <span class="meta-key">GATEWAY</span>
-                <span class="meta-val">DEEP_OCEAN_PROXY</span>
-              </div>
-              <div class="meta-row">
-                <span class="meta-key">DELIVERY</span>
-                <span class="meta-val">IN_MEMORY_STREAM</span>
-              </div>
-            </div>
-
-            <div class="action-row">
-              <a id="downloadBtn" href="#" download="student-profile.jpg" class="btn btn-secondary">
-                [ EXPORT MANIFEST ]
+            <div class="result-actions">
+              <a id="downloadBtn" href="#" download="profile-picture.jpg" class="action-btn action-primary">
+                Download Picture
               </a>
-              <a id="openNewTabBtn" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
-                [ FULL TELEMETRY ]
+              <a id="openNewTabBtn" href="#" target="_blank" rel="noopener noreferrer" class="action-btn action-secondary">
+                Open Full Size
               </a>
             </div>
           </div>
         </div>
       </div>
-    </main>
+    </div>
+  </main>
 
-    <footer class="terminal-footer">
-      <div class="footer-meta">
-        <span class="meta-lock">GHOST_FLEET_CORSAIR</span>
-        <span class="meta-copy">ABES ENGINEERING COLLEGE &bull; ALL RIGHTS RESERVED</span>
-      </div>
-      <div class="footer-links">
-        <span class="footer-tag">RADAR: 200_ONLINE</span>
-        <span class="footer-tag">QUANTUM_NODE_ENGINE</span>
-      </div>
-    </footer>
-  </div>
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span class="footer-copy">Ghost Fleet Profile Picture Lookup &middot; Encrypted Server-Side Gateway</span>
+      <span class="footer-security">No Credentials Exposed &middot; Zero-Log Proxy</span>
+    </div>
+  </footer>
 
-  <script src="app.js?v=5.0"></script>
+  <script src="app.js?v=7.0"></script>
+
+<script>
+window.addEventListener('load', () => {
+  const bad = [];
+  document.querySelectorAll('*').forEach(el => {
+    const rect = el.getBoundingClientRect();
+    if (rect.right > 390 || rect.width > 390) {
+      bad.push({
+        tag: el.tagName,
+        id: el.id,
+        cls: el.className,
+        w: rect.width,
+        r: rect.right,
+        text: (el.textContent || '').slice(0, 30).trim()
+      });
+    }
+  });
+  console.log('OVERFLOW_ELEMENTS::' + JSON.stringify(bad));
+});
+</script>
 </body>
 </html>
