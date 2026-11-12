@@ -4,48 +4,61 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>ABES Student Profile Viewer</title>
-  <meta name="description" content="Secure portal to view ABES student profile photos using authorized institutional ERP gateway.">
+  <title>ABES Student Profile Viewer // ERP Gateway</title>
+  <meta name="description" content="Minimalist terminal gateway to view verified ABES student profiles with authorized ERP proxy.">
   <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div class="app-wrapper">
-    <header class="app-header">
-      <div class="brand-crest">
-        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="crest-icon">
-          <path d="M24 4L6 12V22C6 33.2 13.8 43.6 24 46C34.2 43.6 42 33.2 42 22V12L24 4Z" fill="#0E294B" stroke="#D4AF37" stroke-width="2.5" stroke-linejoin="round"/>
-          <path d="M24 13L28.5 22H38L30.5 27.5L33.5 37L24 31.5L14.5 37L17.5 27.5L10 22H19.5L24 13Z" fill="#D4AF37"/>
-        </svg>
+  <canvas id="matrixCanvas"></canvas>
+
+  <div class="terminal-shell">
+    <header class="terminal-header">
+      <div class="terminal-identity">
+        <span class="sys-tag">[ ABES_SYS // v2.4 ]</span>
+        <span class="sys-sub">ERP_GATEWAY_TERMINAL</span>
       </div>
-      <div class="brand-text">
-        <span class="brand-institution">ABES ENGINEERING COLLEGE</span>
-        <h1 class="brand-title">Student Profile Viewer</h1>
-        <p class="brand-subtitle">Authorized ERP Student Photo Gateway</p>
-      </div>
-      <div id="systemStatus" class="system-status-badge" title="System Status">
+      <div id="systemStatus" class="status-pill" title="System Gateway Status">
         <span class="status-dot"></span>
-        <span class="status-label">Checking ERP Gateway...</span>
+        <span class="status-label">INITIALIZING...</span>
       </div>
     </header>
 
-    <main class="main-card">
-      <form id="searchForm" class="search-form" novalidate>
-        <div class="form-group">
-          <label for="rollNumberInput" class="form-label">
-            <span>Student Roll Number</span>
-          </label>
-          <div class="input-container">
-            <svg class="input-icon" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-              <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
-            </svg>
+    <div class="hero-block">
+      <div class="availability-chip">
+        <span class="chip-dot"></span>
+        <span class="chip-text">AUTHORIZED ERP PROTOCOL</span>
+      </div>
+      <h1 class="hero-title" data-scramble="ACCESS STUDENT ARCHIVES">ACCESS STUDENT ARCHIVES</h1>
+      <p class="hero-subtitle">
+        High-performance direct gateway to verify and inspect institutional student records via authenticated server-side ERP proxy.
+      </p>
+    </div>
+
+    <main id="terminalCard" class="terminal-card">
+      <div class="corner-reticle top-left">+</div>
+      <div class="corner-reticle top-right">+</div>
+      <div class="corner-reticle bottom-left">+</div>
+      <div class="corner-reticle bottom-right">+</div>
+
+      <div class="terminal-bar">
+        <span class="terminal-dot red"></span>
+        <span class="terminal-dot yellow"></span>
+        <span class="terminal-dot green"></span>
+        <span class="terminal-bar-title">QUERY_CONSOLE // ROLL_LOOKUP</span>
+      </div>
+
+      <form id="searchForm" class="terminal-form" novalidate>
+        <div class="input-row">
+          <label for="rollNumberInput" class="input-prompt">&gt; ROLL_ID:</label>
+          <div class="input-wrapper">
             <input 
               type="text" 
               id="rollNumberInput" 
               name="rollNumber"
-              class="form-input" 
+              class="terminal-input" 
               placeholder="Enter student roll number" 
               autocomplete="off" 
               spellcheck="false"
@@ -53,85 +66,94 @@
               required 
               autofocus
             />
-            <button type="button" id="clearBtn" class="clear-input-btn hidden" aria-label="Clear roll number input">&times;</button>
+            <button type="button" id="clearBtn" class="clear-btn hidden" aria-label="Clear input">[CLR]</button>
           </div>
-          <p id="inputHelper" class="input-helper-text">Accepts alphanumeric letters, numbers, hyphens, and underscores.</p>
         </div>
 
-        <button type="submit" id="searchBtn" class="btn btn-primary">
-          <span class="btn-text">Search Profile</span>
-          <svg class="btn-icon" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-            <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"/>
-          </svg>
-        </button>
+        <div class="form-actions">
+          <button type="submit" id="searchBtn" class="btn btn-primary" data-scramble="INITIATE QUERY">
+            <span class="btn-text">INITIATE QUERY</span>
+            <span class="btn-bracket">&gt;&gt;</span>
+          </button>
+        </div>
       </form>
 
-      <div id="loadingState" class="state-container loading-state hidden" aria-live="polite">
-        <div class="spinner"></div>
-        <p class="loading-text">Fetching verified student photo from ERP...</p>
+      <div id="loadingState" class="terminal-state loading-state hidden" aria-live="polite">
+        <div class="terminal-loader">
+          <div class="loader-bar"></div>
+        </div>
+        <p class="loader-text">&gt; ESTABLISHING ERP TUNNEL... FETCHING DOSSIER</p>
       </div>
 
-      <div id="errorState" class="state-container error-state hidden" role="alert" aria-live="assertive">
-        <div class="error-icon-box">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="error-icon">
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="12" y1="8" x2="12" y2="12"></line>
-            <line x1="12" y1="16" x2="12.01" y2="16"></line>
-          </svg>
-        </div>
-        <div class="error-content">
-          <h3 id="errorTitle" class="error-title">Request Failed</h3>
-          <p id="errorMessage" class="error-message">An unexpected error occurred.</p>
-          <div id="adminTip" class="admin-tip hidden">
-            <strong>Administrator Tip:</strong> The ERP authentication session may have expired. Please refresh the authorized ERP session credentials on the server.
-          </div>
+      <div id="errorState" class="terminal-state error-state hidden" role="alert" aria-live="assertive">
+        <div class="error-badge">[ TERMINAL_EXCEPTION ]</div>
+        <h3 id="errorTitle" class="error-title">REQUEST FAILED</h3>
+        <p id="errorMessage" class="error-message">An unexpected communication error occurred.</p>
+        <div id="adminTip" class="admin-tip hidden">
+          &gt; SYSTEM NOTICE: ERP session credentials require renewal. Update server-side session cookies.
         </div>
       </div>
 
-      <div id="resultState" class="state-container result-state hidden">
-        <div class="photo-card">
-          <div class="photo-frame">
-            <img id="profileImage" src="" alt="Student Profile Photo" class="profile-img" />
+      <div id="resultState" class="terminal-state result-state hidden">
+        <div class="dossier-grid">
+          <div class="photo-container">
+            <div class="photo-scanline-wrap">
+              <img id="profileImage" src="" alt="Verified Student Profile Photo" class="student-photo" />
+              <div class="scanlines"></div>
+            </div>
+            <div class="photo-badge">
+              <span class="badge-dot"></span>
+              <span>VERIFIED_ERP</span>
+            </div>
           </div>
-          <div class="student-meta">
-            <span class="meta-label">Roll Number</span>
-            <span id="displayRoll" class="meta-roll"></span>
-            <span class="verified-badge">
-              <svg viewBox="0 0 20 20" fill="currentColor" class="badge-icon">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-              </svg>
-              ERP Verified
-            </span>
-          </div>
-          <div class="photo-actions">
-            <a id="downloadBtn" href="#" download="student-profile.jpg" class="btn btn-secondary">
-              <svg viewBox="0 0 20 20" fill="currentColor" class="action-icon">
-                <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"/>
-              </svg>
-              Download
-            </a>
-            <a id="openNewTabBtn" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
-              <svg viewBox="0 0 20 20" fill="currentColor" class="action-icon">
-                <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z"/>
-                <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z"/>
-              </svg>
-              Open Full
-            </a>
+
+          <div class="meta-container">
+            <div class="meta-header">
+              <span class="meta-title">STUDENT DOSSIER</span>
+              <span class="meta-tag">RECORD_FOUND</span>
+            </div>
+
+            <div class="meta-table">
+              <div class="meta-row">
+                <span class="meta-key">IDENTIFIER</span>
+                <span id="displayRoll" class="meta-val"></span>
+              </div>
+              <div class="meta-row">
+                <span class="meta-key">STATUS</span>
+                <span class="meta-val highlight">200_AUTHENTICATED</span>
+              </div>
+              <div class="meta-row">
+                <span class="meta-key">GATEWAY</span>
+                <span class="meta-val">DIRECT_SECURE_TUNNEL</span>
+              </div>
+              <div class="meta-row">
+                <span class="meta-key">DELIVERY</span>
+                <span class="meta-val">IN_MEMORY_STREAM</span>
+              </div>
+            </div>
+
+            <div class="action-row">
+              <a id="downloadBtn" href="#" download="student-profile.jpg" class="btn btn-secondary">
+                [ EXPORT IMAGE ]
+              </a>
+              <a id="openNewTabBtn" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
+                [ OPEN FULL ]
+              </a>
+            </div>
           </div>
         </div>
       </div>
     </main>
 
-    <footer class="app-footer">
-      <div class="security-notice">
-        <svg viewBox="0 0 20 20" fill="currentColor" class="shield-icon">
-          <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-        </svg>
-        <span>
-          <strong>Authorized Access Only:</strong> Queries are processed via server-side authenticated proxy. Authentication tokens are never exposed to the client. Images are delivered in-memory and not stored.
-        </span>
+    <footer class="terminal-footer">
+      <div class="footer-meta">
+        <span class="meta-lock">ENCRYPTED_PROXY</span>
+        <span>ABES ENGINEERING COLLEGE &bull; ALL RIGHTS RESERVED</span>
       </div>
-      <p class="copyright">&copy; ABES Student Profile Viewer &bull; Security-Hardened Gateway</p>
+      <div class="footer-links">
+        <span class="footer-tag">STATUS: 200_ONLINE</span>
+        <span class="footer-tag">NODE_EXPRESS_ENGINE</span>
+      </div>
     </footer>
   </div>
 
