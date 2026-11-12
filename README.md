@@ -17,7 +17,7 @@ The application acts as a secure, authenticated proxy between the client browser
 ```
 [ Browser Client ]
        │
-       ▼ (Roll Number: "2025B01010618")
+       ▼ (Roll Number: "ROLL_NUMBER")
 [ Express Backend Proxy ] ─── Attaches Server-Side Secrets (ERP_MYAUTH, ERP_ASP_NET_SESSION_ID)
        │
        ▼ (HTTPS with authorized Cookies)
@@ -206,7 +206,7 @@ GET /api/profile/:rollNumber/json
 ```json
 {
   "success": true,
-  "rollNumber": "2025B01010618",
+  "rollNumber": "ROLL_NUMBER",
   "contentType": "image/jpeg",
   "sizeBytes": 2819,
   "base64": "/9j/4AAQSkZJRg...",
@@ -240,7 +240,7 @@ Clients can provide the key using **any of these three industry-standard methods
    ```
 3. **Query Parameter (Useful for `<img>` tags):**
    ```http
-   GET /api/profile/2025B01010618?api_key=your_api_key_here
+   GET /api/profile/ROLL_NUMBER?api_key=your_api_key_here
    ```
 
 *(Note: The built-in frontend on Railway continues working seamlessly without needing a key).*
@@ -296,7 +296,7 @@ export default function StudentPhotoViewer() {
 ### Direct HTML `<img>` Tag Example:
 ```html
 <img 
-  src="https://abes-profile-viewer-production.up.railway.app/api/profile/2025B01010618" 
+  src="https://abes-profile-viewer-production.up.railway.app/api/profile/ROLL_NUMBER" 
   alt="Student Profile" 
   onerror="this.style.display='none'"
 />
@@ -316,10 +316,10 @@ if (response.statusCode == 200) {
 ### cURL:
 ```bash
 # Download image directly
-curl -o student.jpg "https://abes-profile-viewer-production.up.railway.app/api/profile/2025B01010618"
+curl -o student.jpg "https://abes-profile-viewer-production.up.railway.app/api/profile/ROLL_NUMBER"
 
 # Or get JSON
-curl "https://abes-profile-viewer-production.up.railway.app/api/profile/2025B01010618?format=json"
+curl "https://abes-profile-viewer-production.up.railway.app/api/profile/ROLL_NUMBER?format=json"
 ```
 
 ---
@@ -335,7 +335,7 @@ curl "https://abes-profile-viewer-production.up.railway.app/api/profile/2025B010
   ```
 - `404 Not Found`:
   ```json
-  { "error": "Profile image not found for roll number: 2025B01010618" }
+  { "error": "Profile image not found for roll number: ROLL_NUMBER" }
   ```
 - `429 Too Many Requests`:
   ```json
@@ -455,7 +455,7 @@ The application is completely self-contained and compatible with any platform su
 | :--- | :--- | :--- |
 | **"ERP session has expired or is invalid"** | The ASP.NET session expired on ABES ERP. | Log in to ABES ERP in your browser, copy fresh `MyAuth` and `ASP.NET_SessionId` cookie values, and update them in `.env`. Restart the server. |
 | **"Server is not configured with valid ERP session credentials"** | Environment variables are missing or empty. | Check that `.env` exists in `abes-profile-viewer/` and contains non-empty `ERP_MYAUTH` and `ERP_ASP_NET_SESSION_ID`. |
-| **"Invalid roll number format"** | Roll number contains spaces or unsupported symbols. | Enter roll number containing only letters, numbers, `-`, or `_` (e.g., `2025B01010618`). |
+| **"Invalid roll number format"** | Roll number contains spaces or unsupported symbols. | Enter roll number containing only letters, numbers, `-`, or `_` (e.g., `ROLL_NUMBER`). |
 | **"Rate limit exceeded"** | More than 30 requests sent within 1 minute from the same IP. | Wait for the cooldown window (shown in message) or adjust `RATE_LIMIT_MAX` in `.env`. |
 | **"ERP request timed out"** | Upstream `erp.abes.ac.in` server is slow, unreachable, or undergoing maintenance. | Verify that you can open `https://erp.abes.ac.in` in your browser. Increase `ERP_TIMEOUT_MS` if required. |
 

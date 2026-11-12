@@ -13,7 +13,6 @@
 </head>
 <body>
   <div class="app-wrapper">
-    <!-- Header -->
     <header class="app-header">
       <div class="brand-crest">
         <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="crest-icon">
@@ -32,13 +31,11 @@
       </div>
     </header>
 
-    <!-- Main Card -->
     <main class="main-card">
       <form id="searchForm" class="search-form" novalidate>
         <div class="form-group">
           <label for="rollNumberInput" class="form-label">
             <span>Student Roll Number</span>
-            <span class="label-hint">e.g. 2025B01010618</span>
           </label>
           <div class="input-container">
             <svg class="input-icon" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -49,7 +46,7 @@
               id="rollNumberInput" 
               name="rollNumber"
               class="form-input" 
-              placeholder="Enter ABES Roll Number" 
+              placeholder="Enter student roll number" 
               autocomplete="off" 
               spellcheck="false"
               maxlength="30"
@@ -69,13 +66,11 @@
         </button>
       </form>
 
-      <!-- Loading State Indicator -->
       <div id="loadingState" class="state-container loading-state hidden" aria-live="polite">
         <div class="spinner"></div>
         <p class="loading-text">Fetching verified student photo from ERP...</p>
       </div>
 
-      <!-- Error State Box -->
       <div id="errorState" class="state-container error-state hidden" role="alert" aria-live="assertive">
         <div class="error-icon-box">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="error-icon">
@@ -93,7 +88,6 @@
         </div>
       </div>
 
-      <!-- Success / Profile Photo Card -->
       <div id="resultState" class="state-container result-state hidden">
         <div class="photo-card">
           <div class="photo-frame">
@@ -101,7 +95,7 @@
           </div>
           <div class="student-meta">
             <span class="meta-label">Roll Number</span>
-            <span id="displayRoll" class="meta-roll">2025B01010618</span>
+            <span id="displayRoll" class="meta-roll"></span>
             <span class="verified-badge">
               <svg viewBox="0 0 20 20" fill="currentColor" class="badge-icon">
                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
@@ -128,7 +122,6 @@
       </div>
     </main>
 
-    <!-- Footer with Security and Privacy Notes -->
     <footer class="app-footer">
       <div class="security-notice">
         <svg viewBox="0 0 20 20" fill="currentColor" class="shield-icon">
