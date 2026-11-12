@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
           columns = Math.max(1, Math.floor(width / fontSize));
           drops = [];
           for (let i = 0; i < columns; i++) {
-            drops[i] = Math.random() * -80;
+            drops[i] = Math.random() * -60;
           }
         }
         initColumns();
@@ -98,8 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, { passive: true });
 
         function drawMatrix() {
-          ctx.fillStyle = 'rgba(0, 12, 6, 0.16)';
-          ctx.fillRect(0, 0, width, height);
+          ctx.clearRect(0, 0, width, height);
 
           ctx.font = `${fontSize}px "IBM Plex Mono", monospace`;
 
@@ -109,7 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const y = drops[i] * fontSize;
 
             const dist = pointerActive ? Math.hypot(x - pointerX, y - pointerY) : 999;
-            if (dist < 100) {
+            if (dist < 90) {
               ctx.fillStyle = '#ffffff';
             } else {
               ctx.fillStyle = 'rgba(0, 232, 112, 0.45)';
@@ -129,58 +128,32 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch {}
   }
 
-  if (terminalCard) {
+  if (terminalCard && window.matchMedia('(min-width: 641px)').matches) {
     let currentX = 0;
     let currentY = 0;
     let targetX = 0;
     let targetY = 0;
-    const maxTilt = 8;
+    const maxTilt = 5;
 
-    function handlePointerTilt(clientX, clientY) {
+    window.addEventListener('mousemove', (e) => {
       const rect = terminalCard.getBoundingClientRect();
       const cardCenterX = rect.left + rect.width / 2;
       const cardCenterY = rect.top + rect.height / 2;
 
-      const normX = (clientX - cardCenterX) / (window.innerWidth / 2);
-      const normY = (clientY - cardCenterY) / (window.innerHeight / 2);
+      const normX = (e.clientX - cardCenterX) / (window.innerWidth / 2);
+      const normY = (e.clientY - cardCenterY) / (window.innerHeight / 2);
 
       const clampedX = Math.max(-1, Math.min(1, normX));
       const clampedY = Math.max(-1, Math.min(1, normY));
 
       targetX = -clampedY * maxTilt;
       targetY = clampedX * maxTilt;
-    }
-
-    window.addEventListener('mousemove', (e) => {
-      handlePointerTilt(e.clientX, e.clientY);
-    }, { passive: true });
-
-    window.addEventListener('touchmove', (e) => {
-      if (e.touches && e.touches.length > 0) {
-        handlePointerTilt(e.touches[0].clientX, e.touches[0].clientY);
-      }
-    }, { passive: true });
-
-    window.addEventListener('touchend', () => {
-      targetX = 0;
-      targetY = 0;
     }, { passive: true });
 
     window.addEventListener('mouseleave', () => {
       targetX = 0;
       targetY = 0;
     });
-
-    if (window.DeviceOrientationEvent) {
-      window.addEventListener('deviceorientation', (e) => {
-        if (e.gamma !== null && e.beta !== null) {
-          const tiltY = Math.max(-20, Math.min(20, e.gamma)) / 20;
-          const tiltX = (Math.max(15, Math.min(65, e.beta)) - 40) / 25;
-          targetX = -tiltX * maxTilt;
-          targetY = tiltY * maxTilt;
-        }
-      }, { passive: true });
-    }
 
     function updateCardTilt() {
       currentX += (targetX - currentX) * 0.08;
@@ -235,7 +208,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (data.sessionConfigured) {
           if (data.erpSession === 'active') {
             systemStatus.className = 'status-pill status-online';
-            statusLabel.textContent = 'GATEWAY ONLINE // ACTIVE';
+            statusLabel.textContent = 'ONLINE // ACTIVE';
           } else if (data.erpSession === 'expired') {
             systemStatus.className = 'status-pill status-warning';
             statusLabel.textContent = 'SESSION EXPIRED';
@@ -244,18 +217,18 @@ document.addEventListener('DOMContentLoaded', () => {
             statusLabel.textContent = 'GATEWAY BUSY';
           } else {
             systemStatus.className = 'status-pill status-online';
-            statusLabel.textContent = 'GATEWAY CONFIGURED';
+            statusLabel.textContent = 'CONFIGURED';
           }
         } else {
           systemStatus.className = 'status-pill status-warning';
-          statusLabel.textContent = 'AWAITING CREDENTIALS';
+          statusLabel.textContent = 'AWAITING AUTH';
         }
       } else {
         throw new Error('Non-200 response');
       }
     } catch {
       systemStatus.className = 'status-pill status-offline';
-      statusLabel.textContent = 'GATEWAY OFFLINE';
+      statusLabel.textContent = 'OFFLINE';
     }
   }
 
@@ -377,7 +350,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const imageBlob = await response.blob();
         showResult(imageBlob, trimmedRoll);
         systemStatus.className = 'status-pill status-online';
-        statusLabel.textContent = 'GATEWAY ONLINE // ACTIVE';
+        statusLabel.textContent = 'ONLINE // ACTIVE';
       } else {
         let errData = {};
         try {

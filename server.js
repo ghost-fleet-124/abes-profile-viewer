@@ -891,8 +891,15 @@ app.get(['/api/profile/:rollNumber', '/api/profile/:rollNumber/json'], rateLimit
 });
 
 app.use(express.static(path.join(__dirname, 'public'), {
-  maxAge: '1d',
-  etag: true
+  maxAge: 0,
+  etag: true,
+  setHeaders: (res, filePath) => {
+    if (filePath.endsWith('.html')) {
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    } else {
+      res.setHeader('Cache-Control', 'public, max-age=60');
+    }
+  }
 }));
 
 app.all('/api/*', (req, res) => {
