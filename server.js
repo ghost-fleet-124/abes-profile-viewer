@@ -553,7 +553,7 @@ async function executeErpLoginFlow() {
   return {
     success: false,
     code: 'ERP_SESSION_ESTABLISHMENT_FAILED',
-    message: 'ERP session establishment failed. Configured ERP session cookies are expired or invalid.'
+    message: 'Wait For Admin to fix the issue.'
   };
 }
 
@@ -695,7 +695,7 @@ app.get(['/api/profile/:rollNumber', '/api/profile/:rollNumber/json'], rateLimit
       console.warn(`[ERP] Re-authentication failed: ${loginResult.code}`);
       const httpStatus = loginResult.code === 'ERP_UNAVAILABLE' ? 502 : 401;
       return res.status(httpStatus).json({
-        error: loginResult.message || 'ERP session has expired or is invalid. Please refresh the authorized ERP credentials.',
+        error: loginResult.message || 'Wait For Admin to fix the issue.',
         code: loginResult.code
       });
     }
@@ -760,7 +760,7 @@ app.get(['/api/profile/:rollNumber', '/api/profile/:rollNumber/json'], rateLimit
         erpSessionStatus = 'expired';
         console.warn(`[Auth Warning] ERP redirected to login page (${location}). Session has expired.`);
         return res.status(401).json({
-          error: 'ERP session has expired or is invalid. Please refresh the authorized ERP credentials.',
+          error: 'Wait For Admin to fix the issue.',
           code: 'ERP_SESSION_EXPIRED'
         });
       }

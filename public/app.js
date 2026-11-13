@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
             statusLabel.textContent = 'ERP Session Active';
           } else if (data.erpSession === 'expired') {
             systemStatus.className = 'system-status-badge status-warning';
-            statusLabel.textContent = 'ERP Session Expired';
+            statusLabel.textContent = 'API Session Expired';
           } else if (data.erpSession === 'temporarily_unavailable') {
             systemStatus.className = 'system-status-badge status-warning';
             statusLabel.textContent = 'ERP Unavailable';
@@ -185,9 +185,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (response.status === 400) {
           showError('Invalid Roll Number', msg);
         } else if (response.status === 401) {
-          showError('ERP Session Expired', msg, true);
+          showError('API Session Expired', 'Wait For Admin to fix the issue.', true);
           systemStatus.className = 'system-status-badge status-warning';
-          statusLabel.textContent = 'ERP Session Expired';
+          statusLabel.textContent = 'API Session Expired';
         } else if (response.status === 404) {
           showError('Profile Not Found', msg);
         } else if (response.status === 429) {
