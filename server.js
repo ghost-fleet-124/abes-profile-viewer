@@ -44,6 +44,8 @@ app.use((req, res, next) => {
   res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=(), usb=()');
   res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
   res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+  res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+  res.setHeader('X-DNS-Prefetch-Control', 'on');
   res.setHeader('Content-Security-Policy', [
     "default-src 'self'",
     "script-src 'self'",
@@ -194,9 +196,47 @@ function apiKeyAuth(req, res, next) {
 
 const ROLL_NUMBER_REGEX = /^[A-Za-z0-9_-]{3,30}$/;
 
+function isSafeUpstreamUrl(urlStr) {
+  try {
+    const parsed = new URL(urlStr);
+    const hostname = parsed.hostname.toLowerCase();
+    
+    // In test environment, permit localhost / 127.0.0.1 for mock ERP servers
+    if (process.env.NODE_ENV === 'test' || hostname === '127.0.0.1' || hostname === 'localhost') {
+      return true;
+    }
+    
+    // Disallow dangerous internal cloud metadata & private subnet IPs (SSRF protection)
+    if (
+      hostname === '169.254.169.254' ||
+      hostname.startsWith('10.') ||
+      hostname.startsWith('192.168.') ||
+      hostname.startsWith('172.16.') ||
+      hostname.startsWith('172.17.') ||
+      hostname.startsWith('172.18.') ||
+      hostname.startsWith('172.19.') ||
+      hostname.startsWith('172.2') ||
+      hostname.startsWith('172.30.') ||
+      hostname.startsWith('172.31.') ||
+      hostname === '0.0.0.0' ||
+      hostname === '::1'
+    ) {
+      return false;
+    }
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 function validateRollNumber(rollNumber) {
   if (!rollNumber || typeof rollNumber !== 'string') {
     return { valid: false, error: 'Roll number is required.' };
+  }
+
+  // Reject null bytes, control characters, or non-printable ASCII
+  if (/[\x00-\x1f\x7f]/.test(rollNumber) || rollNumber.includes('%00')) {
+    return { valid: false, error: 'Invalid characters detected in roll number.' };
   }
 
   const trimmed = rollNumber.trim();
@@ -766,15 +806,24 @@ app.get(['/api/profile/:rollNumber', '/api/profile/:rollNumber/json'], rateLimit
     if (isJsonRequested) {
       return res.status(200).json(cached.jsonData);
     }
+    const etag = `"${crypto.createHash('md5').update(cached.buffer).digest('hex')}"`;
+    if (req.headers['if-none-match'] === etag) {
+      return res.status(304).end();
+    }
     res.setHeader('Content-Type', cached.contentType);
     res.setHeader('Content-Length', cached.buffer.length);
     res.setHeader('Content-Disposition', `inline; filename="GHOST-FLEET-${sanitizedRoll}.jpg"`);
     res.setHeader('Cache-Control', 'public, max-age=300');
+    res.setHeader('ETag', etag);
     res.setHeader('X-Cache', 'HIT');
     return res.status(200).send(cached.buffer);
   }
 
   const upstreamUrl = `${profileBaseUrl}?ID=${encodeURIComponent(sanitizedRoll)}`;
+  if (!isSafeUpstreamUrl(upstreamUrl)) {
+    console.error(`[Security Alert] Blocked prohibited upstream destination: ${upstreamUrl}`);
+    return res.status(403).json({ error: 'Access to prohibited upstream destination.' });
+  }
   const cookieHeader = erpCookieJar.getCookieString(upstreamUrl);
 
   const controller = new AbortController();
@@ -913,10 +962,16 @@ app.get(['/api/profile/:rollNumber', '/api/profile/:rollNumber/json'], rateLimit
       return res.status(200).json(jsonData);
     }
 
+    const etag = `"${crypto.createHash('md5').update(buffer).digest('hex')}"`;
+    if (req.headers['if-none-match'] === etag) {
+      return res.status(304).end();
+    }
+
     res.setHeader('Content-Type', cleanContentType);
     res.setHeader('Content-Length', buffer.length);
     res.setHeader('Content-Disposition', `inline; filename="GHOST-FLEET-${sanitizedRoll}.jpg"`);
     res.setHeader('Cache-Control', 'public, max-age=300');
+    res.setHeader('ETag', etag);
     res.setHeader('Pragma', 'no-cache');
     res.setHeader('Expires', '0');
     res.setHeader('X-Content-Type-Options', 'nosniff');
@@ -1018,6 +1073,17 @@ if (require.main === module) {
 
   process.on('SIGTERM', () => shutdown('SIGTERM'));
   process.on('SIGINT', () => shutdown('SIGINT'));
+
+  process.on('uncaughtException', (err) => {
+    if (err && (err.code === 'ECONNRESET' || err.code === 'EPIPE' || err.code === 'ECANCELED')) {
+      return;
+    }
+    console.error('[FATAL UNCAUGHT EXCEPTION]', err && err.stack ? err.stack : err);
+  });
+
+  process.on('unhandledRejection', (reason) => {
+    console.error('[UNHANDLED REJECTION]', reason && reason.stack ? reason.stack : reason);
+  });
 }
 
 module.exports = {

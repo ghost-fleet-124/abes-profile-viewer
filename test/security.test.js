@@ -69,6 +69,17 @@ async function runSecurityTests() {
       assert.ok(csp.includes("frame-ancestors 'none'"));
     });
 
+    await test('Enforces Strict-Transport-Security (HSTS)', async () => {
+      const res = await fetch(`${baseUrl}/api/health`);
+      const hsts = res.headers.get('strict-transport-security');
+      assert.ok(hsts && hsts.includes('max-age='), 'HSTS header must be present');
+    });
+
+    await test('Enforces X-DNS-Prefetch-Control', async () => {
+      const res = await fetch(`${baseUrl}/api/health`);
+      assert.strictEqual(res.headers.get('x-dns-prefetch-control'), 'on');
+    });
+
     console.log('\n--- AUDIT 2: Injection, XSS & Path Traversal Fuzzing ---');
 
     const injectionPayloads = [
