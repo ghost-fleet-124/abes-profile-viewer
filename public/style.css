@@ -33,6 +33,58 @@
 .instagram-btn:hover .instagram-icon {
   transform: scale(1.1);
 }
+
+/* Made by Ghost Fleet Footer Signature */
+.made-by-ghost-fleet {
+  margin-top: 10px;
+  font-family: 'Orbitron', 'Syne', 'Eurostile', 'Microgramma', -apple-system, sans-serif;
+  font-size: 1.35rem;
+  font-weight: 900;
+  font-style: italic;
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--primary-navy);
+  text-shadow: 0 1px 2px rgba(14, 41, 75, 0.12);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+}
+.made-by-ghost-fleet .mb-prefix {
+  font-size: 0.9em;
+  font-weight: 700;
+  color: #64748b;
+  letter-spacing: 0.04em;
+}
+.made-by-ghost-fleet .mb-brand {
+  font-weight: 900;
+  color: var(--primary-navy);
+  letter-spacing: 0.06em;
+  position: relative;
+  background: linear-gradient(135deg, #0e294b 0%, #1e3a8a 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.made-by-ghost-fleet:hover {
+  transform: translateY(-2px) scale(1.02);
+  text-shadow: 0 6px 16px rgba(14, 41, 75, 0.2);
+}
+.made-by-ghost-fleet:hover .mb-brand {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@media (max-width: 480px) {
+  .made-by-ghost-fleet {
+    font-size: 1.15rem;
+    gap: 6px;
+    margin-top: 8px;
+  }
+}
+
 .admin-insta-link {
   color: var(--primary-navy);
   font-weight: 700;
