@@ -2,6 +2,7 @@
 
 require('dotenv').config();
 const express = require('express');
+const compression = require('compression');
 const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
@@ -28,11 +29,49 @@ const profileCache = new Map();
 app.disable('x-powered-by');
 app.set('trust proxy', 1);
 
+app.use(compression({
+  threshold: 1024,
+  filter: (req, res) => {
+    if (req.headers['x-no-compression']) return false;
+    return compression.filter(req, res);
+  }
+}));
+
 app.use((req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('X-Frame-Options', 'DENY');
   res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
-  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=(), usb=()');
+  res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
+  res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+  res.setHeader('Content-Security-Policy', [
+    "default-src 'self'",
+    "script-src 'self'",
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+    "font-src 'self' https://fonts.gstatic.com data:",
+    "img-src 'self' data: blob:",
+    "connect-src 'self'",
+    "object-src 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+    "frame-ancestors 'none'"
+  ].join('; '));
+  next();
+});
+
+// Guard against prototype pollution in URL, query, and parameter structures
+app.use((req, res, next) => {
+  const rawUrl = decodeURIComponent(req.originalUrl || req.url || '');
+  if (rawUrl.includes('__proto__') || rawUrl.includes('constructor[prototype]') || rawUrl.includes('prototype[')) {
+    return res.status(400).json({ error: 'Malicious prototype pollution parameter detected.' });
+  }
+  if (req.query && typeof req.query === 'object') {
+    for (const key of Object.getOwnPropertyNames(req.query)) {
+      if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+        return res.status(400).json({ error: 'Malicious prototype pollution parameter detected.' });
+      }
+    }
+  }
   next();
 });
 
@@ -49,13 +88,14 @@ app.use('/api', (req, res, next) => {
   next();
 });
 
-app.use(express.json());
+app.use(express.json({ limit: '10kb' }));
 
 class InMemoryRateLimiter {
   constructor(windowMs, maxRequests) {
     this.windowMs = windowMs;
     this.maxRequests = maxRequests;
     this.hits = new Map();
+    this.maxTrackedIps = 10000;
 
     const cleanupInterval = setInterval(() => {
       const now = Date.now();
@@ -78,6 +118,10 @@ class InMemoryRateLimiter {
       let record = this.hits.get(clientIp);
 
       if (!record || (now - record.startTime > this.windowMs)) {
+        if (this.hits.size >= this.maxTrackedIps) {
+          const oldestKey = this.hits.keys().next().value;
+          this.hits.delete(oldestKey);
+        }
         record = { count: 1, startTime: now };
         this.hits.set(clientIp, record);
       } else {
@@ -554,7 +598,7 @@ async function executeErpLoginFlow() {
   return {
     success: false,
     code: 'ERP_SESSION_ESTABLISHMENT_FAILED',
-    message: 'Wait For Admin to fix the issue.'
+    message: 'ERP session has expired or is invalid. Wait For Admin to fix the issue.'
   };
 }
 
@@ -695,8 +739,13 @@ app.get(['/api/profile/:rollNumber', '/api/profile/:rollNumber/json'], rateLimit
     if (!loginResult.success) {
       console.warn(`[ERP] Re-authentication failed: ${loginResult.code}`);
       const httpStatus = loginResult.code === 'ERP_UNAVAILABLE' ? 502 : 401;
+      const errorMsg = (loginResult.message && loginResult.message.toLowerCase().includes('expired'))
+        ? loginResult.message
+        : (httpStatus === 401
+            ? `ERP session has expired or is invalid. ${loginResult.message || 'Wait For Admin to fix the issue.'}`
+            : (loginResult.message || 'ABES ERP service temporarily unavailable.'));
       return res.status(httpStatus).json({
-        error: loginResult.message || 'Wait For Admin to fix the issue.',
+        error: errorMsg,
         code: loginResult.code
       });
     }
@@ -704,7 +753,7 @@ app.get(['/api/profile/:rollNumber', '/api/profile/:rollNumber/json'], rateLimit
     const postLoginCheck = await checkErpSession();
     if (!postLoginCheck.authenticated) {
       return res.status(401).json({
-        error: 'ERP session establishment failed after login.',
+        error: 'ERP session establishment failed after login. Session expired or invalid.',
         code: 'ERP_SESSION_ESTABLISHMENT_FAILED'
       });
     }
@@ -762,7 +811,7 @@ app.get(['/api/profile/:rollNumber', '/api/profile/:rollNumber/json'], rateLimit
         erpSessionStatus = 'expired';
         console.warn(`[Auth Warning] ERP redirected to login page (${location}). Session has expired.`);
         return res.status(401).json({
-          error: 'Wait For Admin to fix the issue.',
+          error: 'ERP session has expired or is invalid. Wait For Admin to fix the issue.',
           code: 'ERP_SESSION_EXPIRED'
         });
       }
@@ -919,16 +968,26 @@ app.get('*', (req, res) => {
 });
 
 app.use((err, req, res, next) => {
-  console.error('[Internal Server Error]', err && err.message ? err.message : 'Unknown error');
   if (res.headersSent) {
     return next(err);
   }
-  res.status(500).json({ error: 'An unexpected internal server error occurred.' });
+  const statusCode = err.status || err.statusCode || 500;
+  if (statusCode === 413) {
+    return res.status(413).json({ error: 'Request payload exceeds 10kb maximum limit.' });
+  }
+  console.error('[Internal Server Error]', err && err.message ? err.message : 'Unknown error');
+  const safeMessage = (statusCode >= 400 && statusCode < 500) 
+    ? (err.message || 'Client request error.') 
+    : 'An unexpected internal server error occurred.';
+  res.status(statusCode >= 400 && statusCode < 600 ? statusCode : 500).json({ error: safeMessage });
 });
 
 let server = null;
 if (require.main === module) {
   server = app.listen(PORT, HOST, () => {
+    server.keepAliveTimeout = 65000;
+    server.headersTimeout = 66000;
+    server.requestTimeout = 30000;
     console.log(`====================================================`);
     console.log(` ABES Student Profile Viewer running on http://${HOST}:${PORT}`);
     const hasUserPass = Boolean(process.env.ERP_USERNAME && process.env.ERP_PASSWORD);
