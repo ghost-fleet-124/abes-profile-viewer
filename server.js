@@ -719,6 +719,7 @@ app.get(['/api/profile/:rollNumber', '/api/profile/:rollNumber/json'], rateLimit
     }
     res.setHeader('Content-Type', cached.contentType);
     res.setHeader('Content-Length', cached.buffer.length);
+    res.setHeader('Content-Disposition', `inline; filename="GHOST-FLEET-${sanitizedRoll}.jpg"`);
     res.setHeader('Cache-Control', 'public, max-age=300');
     res.setHeader('X-Cache', 'HIT');
     return res.status(200).send(cached.buffer);
@@ -865,6 +866,7 @@ app.get(['/api/profile/:rollNumber', '/api/profile/:rollNumber/json'], rateLimit
 
     res.setHeader('Content-Type', cleanContentType);
     res.setHeader('Content-Length', buffer.length);
+    res.setHeader('Content-Disposition', `inline; filename="GHOST-FLEET-${sanitizedRoll}.jpg"`);
     res.setHeader('Cache-Control', 'public, max-age=300');
     res.setHeader('Pragma', 'no-cache');
     res.setHeader('Expires', '0');
@@ -895,7 +897,7 @@ app.use(express.static(path.join(__dirname, 'public'), {
   maxAge: 0,
   etag: true,
   setHeaders: (res, filePath) => {
-    if (filePath.endsWith('.html')) {
+    if (filePath.endsWith('.html') || filePath.endsWith('.js') || filePath.endsWith('.css')) {
       res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
     } else {
       res.setHeader('Cache-Control', 'public, max-age=60');

@@ -23,6 +23,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const statusLabel = systemStatus.querySelector('.status-label');
 
   let currentObjectUrl = null;
+  let currentBlob = null;
+  let currentAdmissionNumber = '';
   let promoTimer = null;
   const ROLL_NUMBER_PATTERN = /^[A-Za-z0-9_-]{3,30}$/;
 
@@ -104,6 +106,8 @@ document.addEventListener('DOMContentLoaded', () => {
       URL.revokeObjectURL(currentObjectUrl);
       currentObjectUrl = null;
     }
+    currentBlob = null;
+    currentAdmissionNumber = '';
   }
 
   function resetStates() {
@@ -132,12 +136,16 @@ document.addEventListener('DOMContentLoaded', () => {
     resetStates();
     cleanupObjectUrl();
 
+    currentBlob = blob;
+    currentAdmissionNumber = rollNumber;
     currentObjectUrl = URL.createObjectURL(blob);
     profileImage.src = currentObjectUrl;
     displayRoll.textContent = rollNumber;
 
+    const targetFilename = `GHOST-FLEET-${rollNumber}.jpg`;
     downloadBtn.href = currentObjectUrl;
-    downloadBtn.download = `GHOST-FLEET-${rollNumber}.jpg`;
+    downloadBtn.setAttribute('download', targetFilename);
+    downloadBtn.download = targetFilename;
     openNewTabBtn.href = currentObjectUrl;
 
     resultState.classList.remove('hidden');
@@ -333,6 +341,44 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (themeToggleBtn) {
     themeToggleBtn.addEventListener('click', switchThemeWithAnimation);
+  }
+
+  
+  // Robust Forced Download with GHOST-FLEET naming
+  if (downloadBtn) {
+    downloadBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const adm = currentAdmissionNumber || displayRoll.textContent.trim() || rollNumberInput.value.trim() || 'student';
+      const targetFilename = `GHOST-FLEET-${adm}.jpg`;
+
+      const blobToDownload = currentBlob;
+      let url = currentObjectUrl;
+      let isTemp = false;
+
+      if (blobToDownload) {
+        url = URL.createObjectURL(blobToDownload);
+        isTemp = true;
+      }
+
+      if (!url) return;
+
+      const tempLink = document.createElement('a');
+      tempLink.style.display = 'none';
+      tempLink.href = url;
+      tempLink.download = targetFilename;
+      tempLink.setAttribute('download', targetFilename);
+      document.body.appendChild(tempLink);
+      tempLink.click();
+
+      setTimeout(() => {
+        if (document.body.contains(tempLink)) {
+          document.body.removeChild(tempLink);
+        }
+        if (isTemp) {
+          URL.revokeObjectURL(url);
+        }
+      }, 300);
+    });
   }
 
   checkGatewayHealth();
