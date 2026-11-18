@@ -172,42 +172,140 @@
   </div>
 
   <div id="promoModal" class="promo-modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="promoTitle">
-    <div class="promo-modal-card">
-      <button type="button" class="promo-close-btn" id="promoCloseBtn" aria-label="Close Announcement">&times;</button>
+    <div class="ad-modal-card">
+      <button type="button" class="ad-close-btn" id="promoCloseBtn" aria-label="Close Advertisement">&times;</button>
       
-      <div class="promo-badge">
-        <span class="promo-pulse-dot"></span>
-        OFFICIAL UPDATE
+      <!-- Ambient Glow Behind Modal -->
+      <div class="ad-glow-orb ad-glow-purple"></div>
+      <div class="ad-glow-orb ad-glow-cyan"></div>
+
+      <!-- Top Header Bar -->
+      <div class="ad-top-bar">
+        <div class="ad-badge-pulse">
+          <span class="ad-fire-icon">🔥</span>
+          <span class="ad-badge-text">EXCLUSIVE SNEAK PEEK</span>
+        </div>
+        <span class="ad-eta-pill">⚡ LAUNCHING SOON</span>
       </div>
 
-      <div class="promo-icon-wrap">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="promo-trophy-icon">
-          <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
-          <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
-          <path d="M4 22h16"></path>
-          <path d="M10 14.66V17c0 .55-.45 1-1 1H7"></path>
-          <path d="M14 14.66V17c0 .55.45 1 1 1h2"></path>
-          <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
-        </svg>
+      <!-- Cool Holographic Result Card Preview Teaser -->
+      <div class="ad-preview-container">
+        <div class="ad-mockup-card">
+          <div class="ad-mockup-header">
+            <div class="ad-mockup-dots">
+              <span class="ad-dot red"></span>
+              <span class="ad-dot yellow"></span>
+              <span class="ad-dot green"></span>
+            </div>
+            <span class="ad-mockup-title">⚡ INSTANT RESULT PORTAL 2.0</span>
+            <span class="ad-speed-tag">0.2s LOAD</span>
+          </div>
+
+          <div class="ad-mockup-body">
+            <div class="ad-student-row">
+              <div class="ad-avatar-box">
+                <img src="/assets/ghost-fleet-logo.jpg" alt="Portal Avatar" class="ad-avatar-img" onerror="this.style.display='none'">
+                <span class="ad-avatar-fallback">🎓</span>
+              </div>
+              <div class="ad-student-info">
+                <span class="ad-student-name">B.Tech Semester Results</span>
+                <span class="ad-student-meta">Roll: 2300320100... • Rank #1</span>
+              </div>
+              <span class="ad-status-pill">PASSED 🏆</span>
+            </div>
+
+            <div class="ad-score-row">
+              <div class="ad-score-box">
+                <span class="ad-score-label">OVERALL SGPA</span>
+                <span class="ad-score-val">9.68 <span class="ad-score-sparkle">✨</span></span>
+              </div>
+              <div class="ad-chips-box">
+                <span class="ad-chip">🔥 TOP 1% IN COLLEGE</span>
+                <span class="ad-chip green">⚡ ZERO BACKLOGS</span>
+              </div>
+            </div>
+
+            <!-- Mini Visual Graph -->
+            <div class="ad-mockup-bars">
+              <div class="ad-bar-col"><div class="ad-bar" style="height: 75%"></div><span class="ad-bar-lbl">S1</span></div>
+              <div class="ad-bar-col"><div class="ad-bar" style="height: 85%"></div><span class="ad-bar-lbl">S2</span></div>
+              <div class="ad-bar-col"><div class="ad-bar" style="height: 92%"></div><span class="ad-bar-lbl">S3</span></div>
+              <div class="ad-bar-col"><div class="ad-bar highlight" style="height: 98%"></div><span class="ad-bar-lbl">S4</span></div>
+              <div class="ad-bar-col"><div class="ad-bar highlight" style="height: 100%"></div><span class="ad-bar-lbl">S5</span></div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <h3 id="promoTitle" class="promo-title">Exam Result Website<br><span class="promo-highlight">Coming Soon!</span></h3>
-      
-      <p class="promo-desc">
-        The official <strong>Exam Result Showing Website</strong> is currently under active development. Join our Instagram page for instant launch alerts, previews, and exclusive updates!
-      </p>
+      <!-- Main Catchy Non-Formal Ad Copy -->
+      <div class="ad-content-wrap">
+        <h2 id="promoTitle" class="ad-headline">
+          Tired of ERP Crashing on Result Day? 🤯
+          <span class="ad-glow-text">We're Fixing It Forever.</span>
+        </h2>
+        
+        <p class="ad-description">
+          No more 504 Gateway Timeouts or waiting 3 hours in panic. Get your <strong>Semester Marks, Class Rank &amp; SGPA Breakdown in 0.5 Seconds</strong>.
+        </p>
 
-      <div class="promo-actions">
-        <a href="/insta" target="_blank" rel="noopener noreferrer" class="promo-cta-btn" id="promoInstaBtn">
-          <svg viewBox="0 0 24 24" fill="currentColor" class="instagram-icon" aria-hidden="true">
-            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-          </svg>
-          <span>Join Our Instagram Page</span>
-        </a>
-        <button type="button" class="promo-dismiss-btn" id="promoDismissBtn">Maybe Later</button>
+        <!-- Feature Badges Grid -->
+        <div class="ad-features-grid">
+          <div class="ad-feature-item">
+            <span class="ad-feat-icon">🚀</span>
+            <div class="ad-feat-text">
+              <strong>Instant Load</strong>
+              <span>Zero server crash</span>
+            </div>
+          </div>
+          <div class="ad-feature-item">
+            <span class="ad-feat-icon">📊</span>
+            <div class="ad-feat-text">
+              <strong>Rank &amp; SGPA</strong>
+              <span>Smart analytics</span>
+            </div>
+          </div>
+          <div class="ad-feature-item">
+            <span class="ad-feat-icon">🔔</span>
+            <div class="ad-feat-text">
+              <strong>Fast Alerts</strong>
+              <span>First to know</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Instagram VIP Card -->
+        <div class="ad-insta-card">
+          <div class="ad-insta-left">
+            <div class="ad-insta-logo-ring">
+              <svg viewBox="0 0 24 24" fill="currentColor" class="ad-insta-svg" aria-hidden="true">
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+              </svg>
+            </div>
+            <div class="ad-insta-meta">
+              <div class="ad-insta-handle-row">
+                <span class="ad-insta-handle">@Admin Official Channel</span>
+                <svg class="ad-verified-svg" viewBox="0 0 24 24" fill="#0095F6">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                </svg>
+              </div>
+              <span class="ad-insta-sub">Private Beta Links &amp; Live Drops</span>
+            </div>
+          </div>
+          <span class="ad-members-count">⚡ 1,200+ Joined</span>
+        </div>
+
+        <!-- High-Impact Action Buttons -->
+        <div class="ad-actions">
+          <a href="/insta" target="_blank" rel="noopener noreferrer" class="ad-cta-button" id="promoInstaBtn">
+            <svg viewBox="0 0 24 24" fill="currentColor" class="ad-cta-icon" aria-hidden="true">
+              <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+            </svg>
+            <span>JOIN OUR INSTA FOR EARLY ACCESS 🚀</span>
+          </a>
+          <button type="button" class="ad-dismiss-button" id="promoDismissBtn">No thanks, I'll wait in the server queue 😴</button>
+        </div>
       </div>
     </div>
-  </div>
   </div>
 
   <script src="app.js"></script>

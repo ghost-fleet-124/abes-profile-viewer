@@ -195,18 +195,18 @@
   color: #e1306c;
 }
 
-/* Promo Announcement Modal */
+/* Advance Cool Advertisement Modal */
 .promo-modal-backdrop {
   position: fixed;
   inset: 0;
   z-index: 9999;
-  background: rgba(14, 41, 75, 0.65);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: rgba(7, 10, 19, 0.78);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: 16px;
   opacity: 1;
   visibility: visible;
   transition: opacity 0.3s ease, visibility 0.3s ease;
@@ -217,174 +217,536 @@
   visibility: hidden;
   pointer-events: none;
 }
-.promo-modal-card {
-  background: #ffffff;
-  border-radius: var(--radius-lg);
-  max-width: 440px;
-  width: 100%;
-  padding: 34px 28px 26px;
-  text-align: center;
+.ad-modal-card {
   position: relative;
-  box-shadow: 0 25px 60px rgba(14, 41, 75, 0.25), 0 0 0 1px rgba(212, 175, 55, 0.3);
-  border-top: 4px solid var(--accent-gold);
-  animation: promoPopIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  background: #0f1523;
+  color: #f8fafc;
+  border-radius: 24px;
+  max-width: 480px;
+  width: 100%;
+  padding: 26px 24px 22px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.1), 0 0 40px rgba(121, 40, 202, 0.25);
+  overflow: hidden;
+  animation: adModalPop 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
-@keyframes promoPopIn {
-  from {
+@keyframes adModalPop {
+  0% {
     opacity: 0;
-    transform: scale(0.92) translateY(12px);
+    transform: scale(0.9) translateY(20px);
   }
-  to {
+  100% {
     opacity: 1;
     transform: scale(1) translateY(0);
   }
 }
-.promo-close-btn {
+
+/* Ambient Glow Orbs */
+.ad-glow-orb {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  filter: blur(70px);
+  pointer-events: none;
+  z-index: 0;
+}
+.ad-glow-purple {
+  top: -60px;
+  left: -40px;
+  background: rgba(220, 39, 67, 0.35);
+}
+.ad-glow-cyan {
+  bottom: -60px;
+  right: -40px;
+  background: rgba(0, 223, 216, 0.25);
+}
+
+.ad-close-btn {
   position: absolute;
   top: 14px;
   right: 14px;
   width: 32px;
   height: 32px;
-  border-radius: var(--radius-full);
-  border: 1px solid var(--border-color);
-  background: #f8fafc;
-  color: var(--text-muted);
-  font-size: 1.4rem;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.08);
+  color: #94a3b8;
+  font-size: 1.3rem;
   line-height: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  z-index: 10;
+  transition: all 0.2s ease;
 }
-.promo-close-btn:hover {
-  background: #e2e8f0;
-  color: var(--text-primary);
+.ad-close-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
   transform: rotate(90deg);
 }
-.promo-badge {
+
+/* Top Bar */
+.ad-top-bar {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.ad-badge-pulse {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 4px 12px;
-  background: rgba(212, 175, 55, 0.12);
-  color: #997514;
-  border: 1px solid rgba(212, 175, 55, 0.35);
-  border-radius: var(--radius-full);
-  font-size: 0.72rem;
+  padding: 4px 10px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 999px;
+  font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.08em;
-  margin-bottom: 14px;
+  color: #fbbf24;
 }
-.promo-pulse-dot {
-  width: 6px;
-  height: 6px;
+.ad-fire-icon {
+  font-size: 0.8rem;
+}
+.ad-eta-pill {
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  background: linear-gradient(90deg, #ec4899, #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  padding-right: 36px;
+}
+
+/* Holographic Mockup Card */
+.ad-preview-container {
+  position: relative;
+  z-index: 2;
+  margin-bottom: 18px;
+}
+.ad-mockup-card {
+  background: rgba(18, 25, 41, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  padding: 12px 14px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: transform 0.3s ease;
+}
+.ad-mockup-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(212, 175, 55, 0.4);
+}
+.ad-mockup-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 10px;
+}
+.ad-mockup-dots {
+  display: flex;
+  gap: 5px;
+}
+.ad-dot {
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
-  background: var(--accent-gold);
-  box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.7);
-  animation: pulseGold 1.6s infinite;
 }
-@keyframes pulseGold {
-  0% {
-    box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.7);
-  }
-  70% {
-    box-shadow: 0 0 0 8px rgba(212, 175, 55, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(212, 175, 55, 0);
-  }
+.ad-dot.red { background: #ef4444; }
+.ad-dot.yellow { background: #f59e0b; }
+.ad-dot.green { background: #10b981; }
+
+.ad-mockup-title {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #94a3b8;
 }
-.promo-icon-wrap {
-  width: 56px;
-  height: 56px;
-  background: linear-gradient(135deg, rgba(14, 41, 75, 0.06), rgba(212, 175, 55, 0.15));
-  border-radius: var(--radius-full);
+.ad-speed-tag {
+  font-size: 0.64rem;
+  font-weight: 800;
+  color: #10b981;
+  background: rgba(16, 185, 129, 0.15);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.ad-student-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.ad-avatar-box {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 16px;
-  color: var(--primary-navy);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  flex-shrink: 0;
 }
-.promo-trophy-icon {
-  width: 28px;
-  height: 28px;
-  color: var(--accent-gold);
+.ad-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
-.promo-title {
-  font-size: 1.35rem;
-  font-weight: 800;
-  color: var(--primary-navy);
-  letter-spacing: -0.02em;
-  line-height: 1.25;
-  margin-bottom: 10px;
+.ad-avatar-fallback {
+  font-size: 1.1rem;
 }
-.promo-highlight {
-  color: var(--accent-gold);
-  background: linear-gradient(90deg, #b38f1e, #d4af37);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-.promo-desc {
-  font-size: 0.88rem;
-  color: var(--text-secondary);
-  line-height: 1.55;
-  margin-bottom: 22px;
-}
-.promo-desc strong {
-  color: var(--primary-navy);
-}
-.promo-actions {
+.ad-student-info {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  flex-grow: 1;
 }
-.promo-cta-btn {
+.ad-student-name {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #f1f5f9;
+}
+.ad-student-meta {
+  font-size: 0.68rem;
+  color: #64748b;
+}
+.ad-status-pill {
+  font-size: 0.66rem;
+  font-weight: 800;
+  color: #fbbf24;
+  background: rgba(251, 191, 36, 0.15);
+  border: 1px solid rgba(251, 191, 36, 0.3);
+  padding: 3px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+.ad-score-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 8px 10px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+.ad-score-box {
+  display: flex;
+  flex-direction: column;
+}
+.ad-score-label {
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: #64748b;
+  letter-spacing: 0.05em;
+}
+.ad-score-val {
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: #38bdf8;
+  line-height: 1.1;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.ad-score-sparkle {
+  font-size: 0.9rem;
+}
+.ad-chips-box {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-end;
+}
+.ad-chip {
+  font-size: 0.62rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+}
+.ad-chip.green {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border-color: rgba(16, 185, 129, 0.25);
+}
+.ad-mockup-bars {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 6px;
+  height: 38px;
+  padding-top: 4px;
+}
+.ad-bar-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  height: 100%;
+  justify-content: flex-end;
+  gap: 3px;
+}
+.ad-bar {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
+  transition: height 0.5s ease;
+}
+.ad-bar.highlight {
+  background: linear-gradient(180deg, #38bdf8, #818cf8);
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+}
+.ad-bar-lbl {
+  font-size: 0.58rem;
+  color: #64748b;
+  font-weight: 600;
+}
+
+/* Ad Typography */
+.ad-content-wrap {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+}
+.ad-headline {
+  font-size: 1.25rem;
+  font-weight: 800;
+  line-height: 1.3;
+  color: #f8fafc;
+  margin-bottom: 8px;
+  letter-spacing: -0.01em;
+}
+.ad-glow-text {
+  display: block;
+  background: linear-gradient(135deg, #ff007f 0%, #7928ca 50%, #00dfd8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 900;
+}
+.ad-description {
+  font-size: 0.84rem;
+  color: #94a3b8;
+  line-height: 1.5;
+  margin-bottom: 14px;
+}
+.ad-description strong {
+  color: #e2e8f0;
+}
+
+/* Features Grid */
+.ad-features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.ad-feature-item {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 8px 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 4px;
+}
+.ad-feat-icon {
+  font-size: 1.1rem;
+}
+.ad-feat-text strong {
+  display: block;
+  font-size: 0.72rem;
+  color: #f1f5f9;
+  line-height: 1.2;
+}
+.ad-feat-text span {
+  font-size: 0.62rem;
+  color: #64748b;
+}
+
+/* Instagram VIP Card */
+.ad-insta-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  padding: 10px 14px;
+  margin-bottom: 18px;
+}
+.ad-insta-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-align: left;
+}
+.ad-insta-logo-ring {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  padding: 2px;
+  background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.ad-insta-svg {
+  width: 18px;
+  height: 18px;
+  color: #ffffff;
+}
+.ad-insta-meta {
+  display: flex;
+  flex-direction: column;
+}
+.ad-insta-handle-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.ad-insta-handle {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #f8fafc;
+}
+.ad-verified-svg {
+  width: 14px;
+  height: 14px;
+}
+.ad-insta-sub {
+  font-size: 0.68rem;
+  color: #94a3b8;
+}
+.ad-members-count {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.12);
+  padding: 3px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+/* Call to Action Button */
+.ad-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.ad-cta-button {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   width: 100%;
-  padding: 12px 20px;
+  padding: 14px 20px;
   background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
   color: #ffffff;
-  font-size: 0.92rem;
-  font-weight: 700;
+  font-size: 0.88rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
   text-decoration: none;
-  border-radius: var(--radius-md);
-  box-shadow: 0 4px 16px rgba(220, 39, 67, 0.35);
-  transition: all var(--transition-normal);
+  border-radius: 14px;
+  box-shadow: 0 4px 20px rgba(220, 39, 67, 0.45);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
 }
-.promo-cta-btn:hover {
+.ad-cta-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(220, 39, 67, 0.45);
-  filter: brightness(1.05);
+  box-shadow: 0 8px 26px rgba(220, 39, 67, 0.6);
+  filter: brightness(1.08);
 }
-.promo-dismiss-btn {
+.ad-cta-button:active {
+  transform: translateY(0);
+}
+.ad-cta-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+.ad-dismiss-button {
   background: transparent;
   border: none;
-  color: var(--text-muted);
-  font-size: 0.82rem;
+  color: #64748b;
+  font-size: 0.76rem;
   font-weight: 600;
   cursor: pointer;
   padding: 6px;
-  transition: color var(--transition-fast);
+  transition: color 0.2s;
 }
-.promo-dismiss-btn:hover {
-  color: var(--text-primary);
+.ad-dismiss-button:hover {
+  color: #cbd5e1;
 }
+
 @media (max-width: 480px) {
-  .promo-modal-card {
-    padding: 28px 20px 20px;
+  .ad-modal-card {
+    padding: 20px 16px 16px;
+    max-height: 94vh;
+    overflow-y: auto;
   }
-  .promo-title {
-    font-size: 1.2rem;
+  .ad-top-bar {
+    gap: 6px;
+    padding-right: 34px;
+    margin-bottom: 12px;
   }
-  .promo-desc {
-    font-size: 0.82rem;
+  .ad-badge-pulse {
+    font-size: 0.62rem;
+    padding: 3px 8px;
   }
-  .promo-cta-btn {
-    font-size: 0.88rem;
-    padding: 11px 16px;
+  .ad-eta-pill {
+    font-size: 0.64rem;
+    padding-right: 0;
+  }
+  .ad-headline {
+    font-size: 1.08rem;
+    margin-bottom: 6px;
+  }
+  .ad-description {
+    font-size: 0.76rem;
+    line-height: 1.45;
+    margin-bottom: 12px;
+  }
+  .ad-features-grid {
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+  .ad-feature-item {
+    padding: 6px 4px;
+  }
+  .ad-feat-icon {
+    font-size: 0.95rem;
+  }
+  .ad-feat-text strong {
+    font-size: 0.66rem;
+  }
+  .ad-feat-text span {
+    font-size: 0.56rem;
+  }
+  .ad-insta-card {
+    padding: 8px 10px;
+    margin-bottom: 14px;
+  }
+  .ad-insta-handle {
+    font-size: 0.74rem;
+  }
+  .ad-insta-sub {
+    font-size: 0.62rem;
+  }
+  .ad-cta-button {
+    font-size: 0.78rem;
+    padding: 12px 14px;
+  }
+  .ad-members-count {
+    display: none;
   }
 }
