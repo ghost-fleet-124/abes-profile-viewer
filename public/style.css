@@ -194,3 +194,197 @@
 .admin-insta-link:hover {
   color: #e1306c;
 }
+
+/* Promo Announcement Modal */
+.promo-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(14, 41, 75, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+.promo-modal-backdrop.hidden {
+  display: none !important;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.promo-modal-card {
+  background: #ffffff;
+  border-radius: var(--radius-lg);
+  max-width: 440px;
+  width: 100%;
+  padding: 34px 28px 26px;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 25px 60px rgba(14, 41, 75, 0.25), 0 0 0 1px rgba(212, 175, 55, 0.3);
+  border-top: 4px solid var(--accent-gold);
+  animation: promoPopIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes promoPopIn {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+.promo-close-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-color);
+  background: #f8fafc;
+  color: var(--text-muted);
+  font-size: 1.4rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+.promo-close-btn:hover {
+  background: #e2e8f0;
+  color: var(--text-primary);
+  transform: rotate(90deg);
+}
+.promo-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background: rgba(212, 175, 55, 0.12);
+  color: #997514;
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  border-radius: var(--radius-full);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  margin-bottom: 14px;
+}
+.promo-pulse-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-gold);
+  box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.7);
+  animation: pulseGold 1.6s infinite;
+}
+@keyframes pulseGold {
+  0% {
+    box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 8px rgba(212, 175, 55, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(212, 175, 55, 0);
+  }
+}
+.promo-icon-wrap {
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, rgba(14, 41, 75, 0.06), rgba(212, 175, 55, 0.15));
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+  color: var(--primary-navy);
+}
+.promo-trophy-icon {
+  width: 28px;
+  height: 28px;
+  color: var(--accent-gold);
+}
+.promo-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--primary-navy);
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  margin-bottom: 10px;
+}
+.promo-highlight {
+  color: var(--accent-gold);
+  background: linear-gradient(90deg, #b38f1e, #d4af37);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.promo-desc {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  margin-bottom: 22px;
+}
+.promo-desc strong {
+  color: var(--primary-navy);
+}
+.promo-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.promo-cta-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 12px 20px;
+  background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+  color: #ffffff;
+  font-size: 0.92rem;
+  font-weight: 700;
+  text-decoration: none;
+  border-radius: var(--radius-md);
+  box-shadow: 0 4px 16px rgba(220, 39, 67, 0.35);
+  transition: all var(--transition-normal);
+}
+.promo-cta-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(220, 39, 67, 0.45);
+  filter: brightness(1.05);
+}
+.promo-dismiss-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 6px;
+  transition: color var(--transition-fast);
+}
+.promo-dismiss-btn:hover {
+  color: var(--text-primary);
+}
+@media (max-width: 480px) {
+  .promo-modal-card {
+    padding: 28px 20px 20px;
+  }
+  .promo-title {
+    font-size: 1.2rem;
+  }
+  .promo-desc {
+    font-size: 0.82rem;
+  }
+  .promo-cta-btn {
+    font-size: 0.88rem;
+    padding: 11px 16px;
+  }
+}

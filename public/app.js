@@ -23,7 +23,49 @@ document.addEventListener('DOMContentLoaded', () => {
   const statusLabel = systemStatus.querySelector('.status-label');
 
   let currentObjectUrl = null;
+  let promoTimer = null;
   const ROLL_NUMBER_PATTERN = /^[A-Za-z0-9_-]{3,30}$/;
+
+  const promoModal = document.getElementById('promoModal');
+  const promoCloseBtn = document.getElementById('promoCloseBtn');
+  const promoDismissBtn = document.getElementById('promoDismissBtn');
+  const promoInstaBtn = document.getElementById('promoInstaBtn');
+
+  function openPromoModal() {
+    if (!promoModal) return;
+    promoModal.classList.remove('hidden');
+    promoModal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closePromoModal() {
+    if (!promoModal) return;
+    promoModal.classList.add('hidden');
+    promoModal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  if (promoCloseBtn) promoCloseBtn.addEventListener('click', closePromoModal);
+  if (promoDismissBtn) promoDismissBtn.addEventListener('click', closePromoModal);
+  if (promoInstaBtn) {
+    promoInstaBtn.addEventListener('click', () => {
+      setTimeout(closePromoModal, 300);
+    });
+  }
+
+  if (promoModal) {
+    promoModal.addEventListener('click', (e) => {
+      if (e.target === promoModal) {
+        closePromoModal();
+      }
+    });
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && promoModal && !promoModal.classList.contains('hidden')) {
+      closePromoModal();
+    }
+  });
 
   async function checkGatewayHealth() {
     try {
@@ -65,6 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function resetStates() {
+    if (promoTimer) clearTimeout(promoTimer);
     loadingState.classList.add('hidden');
     errorState.classList.add('hidden');
     resultState.classList.add('hidden');
@@ -98,10 +141,18 @@ document.addEventListener('DOMContentLoaded', () => {
     openNewTabBtn.href = currentObjectUrl;
 
     resultState.classList.remove('hidden');
+
+    // Trigger popup advertisement after 3 seconds of successful search
+    if (promoTimer) clearTimeout(promoTimer);
+    promoTimer = setTimeout(() => {
+      openPromoModal();
+    }, 3000);
   }
 
   function setLoading(isLoading) {
     if (isLoading) {
+      if (promoTimer) clearTimeout(promoTimer);
+      closePromoModal();
       searchBtn.disabled = true;
       searchBtn.querySelector('.btn-text').textContent = 'Fetching...';
       loadingState.classList.remove('hidden');
