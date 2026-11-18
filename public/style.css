@@ -964,47 +964,121 @@ body {
   color: #e1306c;
 }
 
-/* Advance Cool Advertisement Modal - Monochrome & Single Accent */
+/* ==========================================================================
+   Professional Minimalist Advertisement Modal (Light & Dark Sync)
+   Designed with ui-ux-pro-max: Swiss Style, Clean Typography, Zero Artificial Glow
+   ========================================================================== */
+
+:root {
+  --ad-backdrop: rgba(15, 23, 42, 0.6);
+  --ad-card-bg: #ffffff;
+  --ad-border: #e2e8f0;
+  --ad-shadow: 0 20px 45px -12px rgba(15, 23, 42, 0.2), 0 0 0 1px rgba(0, 0, 0, 0.05);
+  --ad-text-primary: #0f172a;
+  --ad-text-secondary: #475569;
+  --ad-text-muted: #64748b;
+  --ad-accent: #2563eb;
+  --ad-pill-bg: #f1f5f9;
+  --ad-pill-border: #e2e8f0;
+  --ad-pill-text: #0f172a;
+  --ad-pill-dot: #2563eb;
+  --ad-feat-bg: #f8fafc;
+  --ad-feat-border: #e2e8f0;
+  --ad-feat-text: #0f172a;
+  --ad-feat-sub: #64748b;
+  --ad-insta-bg: #f8fafc;
+  --ad-insta-border: #e2e8f0;
+  --ad-insta-ring: #e2e8f0;
+  --ad-insta-icon: #0f172a;
+  --ad-cta-bg: #0f172a;
+  --ad-cta-text: #ffffff;
+  --ad-cta-hover: #1e293b;
+  --ad-dismiss-color: #64748b;
+  --ad-dismiss-hover: #0f172a;
+  --ad-close-bg: #f8fafc;
+  --ad-close-border: #e2e8f0;
+  --ad-close-color: #64748b;
+  --ad-close-hover: #0f172a;
+}
+
+[data-theme="dark"] {
+  --ad-backdrop: rgba(0, 0, 0, 0.78);
+  --ad-card-bg: #111827;
+  --ad-border: #1f293d;
+  --ad-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.08);
+  --ad-text-primary: #f8fafc;
+  --ad-text-secondary: #94a3b8;
+  --ad-text-muted: #64748b;
+  --ad-accent: #38bdf8;
+  --ad-pill-bg: #1a2333;
+  --ad-pill-border: #26354d;
+  --ad-pill-text: #f8fafc;
+  --ad-pill-dot: #38bdf8;
+  --ad-feat-bg: #162032;
+  --ad-feat-border: #24334a;
+  --ad-feat-text: #f8fafc;
+  --ad-feat-sub: #94a3b8;
+  --ad-insta-bg: #162032;
+  --ad-insta-border: #24334a;
+  --ad-insta-ring: #24334a;
+  --ad-insta-icon: #ffffff;
+  --ad-cta-bg: #ffffff;
+  --ad-cta-text: #0f172a;
+  --ad-cta-hover: #f1f5f9;
+  --ad-dismiss-color: #94a3b8;
+  --ad-dismiss-hover: #ffffff;
+  --ad-close-bg: #162032;
+  --ad-close-border: #24334a;
+  --ad-close-color: #94a3b8;
+  --ad-close-hover: #ffffff;
+}
+
 .promo-modal-backdrop {
   position: fixed;
   inset: 0;
   z-index: 9999;
-  background: rgba(0, 0, 0, 0.88);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: var(--ad-backdrop);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 16px;
   opacity: 1;
   visibility: visible;
-  transition: opacity 0.25s ease, visibility 0.25s ease;
+  transition: opacity 0.24s ease, visibility 0.24s ease;
 }
+
 .promo-modal-backdrop.hidden {
   display: none !important;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
 }
+
 .ad-modal-card {
   position: relative;
-  background: #0a0d14;
-  color: #ffffff;
-  border-radius: 18px;
-  border: 1px solid #1f2737;
-  max-width: 480px;
+  box-sizing: border-box;
+  min-width: 0;
+  background: var(--ad-card-bg);
+  color: var(--ad-text-primary);
+  border-radius: 16px;
+  border: 1px solid var(--ad-border);
+  box-shadow: var(--ad-shadow);
+  max-width: 440px;
   width: 100%;
-  padding: 24px;
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter", sans-serif;
-  animation: adModalPop 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  padding: 26px 24px 20px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  animation: adModalIn 0.26s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }
-@keyframes adModalPop {
-  0% {
+
+@keyframes adModalIn {
+  from {
     opacity: 0;
-    transform: scale(0.94) translateY(12px);
+    transform: scale(0.96) translateY(8px);
   }
-  100% {
+  to {
     opacity: 1;
     transform: scale(1) translateY(0);
   }
@@ -1014,12 +1088,12 @@ body {
   position: absolute;
   top: 14px;
   right: 14px;
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  border: 1px solid #232b3a;
-  background: #121824;
-  color: #8b949e;
+  border: 1px solid var(--ad-close-border);
+  background: var(--ad-close-bg);
+  color: var(--ad-close-color);
   font-size: 1.25rem;
   line-height: 1;
   display: flex;
@@ -1027,372 +1101,132 @@ body {
   justify-content: center;
   cursor: pointer;
   z-index: 10;
-  transition: all 0.15s ease;
-}
-.ad-close-btn:hover {
-  background: #ffffff;
-  color: #000000;
-  border-color: #ffffff;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
 }
 
-/* Top Bar */
-.ad-top-bar {
+.ad-close-btn:hover {
+  background: var(--ad-close-hover);
+  color: var(--ad-card-bg);
+  border-color: var(--ad-close-hover);
+  transform: scale(1.05);
+}
+
+.ad-close-btn:focus-visible {
+  outline: 2px solid var(--ad-accent);
+  outline-offset: 2px;
+}
+
+/* Header Row & Status Badge */
+.ad-header-row {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
   padding-right: 36px;
 }
 
-/* Animated COMING SOON...... Status Badge */
-.ad-coming-soon-badge {
+.ad-status-pill {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
+  gap: 6px;
   padding: 4px 10px;
-  background: rgba(0, 229, 255, 0.06);
-  border: 1px solid rgba(0, 229, 255, 0.22);
-  border-radius: 6px;
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 0.7rem;
+  background: var(--ad-pill-bg);
+  border: 1px solid var(--ad-pill-border);
+  border-radius: 9999px;
+  font-size: 0.72rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
-  color: #00e5ff;
+  letter-spacing: 0.06em;
+  color: var(--ad-pill-text);
   user-select: none;
-  transition: all 0.25s ease;
-}
-.ad-coming-soon-badge:hover {
-  background: rgba(0, 229, 255, 0.1);
-  border-color: rgba(0, 229, 255, 0.4);
-  box-shadow: 0 0 12px rgba(0, 229, 255, 0.2);
+  transition: all 0.2s ease;
 }
 
-/* Live Status Pulsing Dot */
-.ad-badge-pulse-dot {
+.ad-status-dot {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #00e5ff;
-  box-shadow: 0 0 6px #00e5ff;
+  background: var(--ad-pill-dot);
   flex-shrink: 0;
-  animation: badgeDotPing 1.8s ease-in-out infinite;
+  animation: adStatusPulse 2s ease-in-out infinite;
 }
-@keyframes badgeDotPing {
+
+@keyframes adStatusPulse {
   0%, 100% {
-    transform: scale(1);
-    opacity: 0.8;
-    box-shadow: 0 0 4px #00e5ff;
+    opacity: 0.6;
+    transform: scale(0.9);
   }
   50% {
-    transform: scale(1.35);
     opacity: 1;
-    box-shadow: 0 0 10px #00e5ff, 0 0 16px rgba(0, 229, 255, 0.4);
+    transform: scale(1.15);
   }
 }
 
-/* COMING SOON Text with Upward Motion */
-.ad-cs-text {
-  display: inline-block;
-  will-change: transform, color, text-shadow;
-  animation: csTextLift 3s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
-}
-
-@keyframes csTextLift {
-  0%, 26% {
-    transform: translateY(0);
-    color: #00e5ff;
-    text-shadow: none;
-  }
-  36% {
-    transform: translateY(-3.5px);
-    color: #ffffff;
-    text-shadow: 0 0 8px rgba(0, 229, 255, 0.7);
-  }
-  46%, 100% {
-    transform: translateY(0);
-    color: #00e5ff;
-    text-shadow: none;
-  }
-}
-
-/* Propagating Dots Container */
-.ad-cs-dots {
+.ad-status-dots {
   display: inline-flex;
-  align-items: center;
-  letter-spacing: 0.14em;
-  margin-left: 1px;
+  letter-spacing: 0.12em;
+  font-weight: 700;
 }
 
-.ad-cs-dot {
+.ad-dot-bounce {
   display: inline-block;
-  will-change: transform, opacity, color;
-  opacity: 0.25;
-  color: #00e5ff;
-  font-weight: 800;
-  animation: csDotPropagate 3s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
+  animation: adDotWave 1.4s ease-in-out infinite both;
 }
+.ad-dot-bounce:nth-child(1) { animation-delay: 0s; }
+.ad-dot-bounce:nth-child(2) { animation-delay: 0.2s; }
+.ad-dot-bounce:nth-child(3) { animation-delay: 0.4s; }
 
-/* Cascade Delays for Moving Forward Wave */
-.ad-cs-dot.d1 { animation-delay: 0s; }
-.ad-cs-dot.d2 { animation-delay: 0.08s; }
-.ad-cs-dot.d3 { animation-delay: 0.16s; }
-.ad-cs-dot.d4 { animation-delay: 0.24s; }
-.ad-cs-dot.d5 { animation-delay: 0.32s; }
-.ad-cs-dot.d6 { animation-delay: 0.40s; }
-
-@keyframes csDotPropagate {
-  /* Wave 1: Dots move forward sequentially */
-  0% {
+@keyframes adDotWave {
+  0%, 80%, 100% {
     opacity: 0.25;
-    transform: translateX(0);
-    color: #00e5ff;
-    text-shadow: none;
+    transform: translateY(0);
   }
-  4% {
+  40% {
     opacity: 1;
-    transform: translateX(3px);
-    color: #ffffff;
-    text-shadow: 0 0 6px #00e5ff;
-  }
-  9% {
-    opacity: 0.25;
-    transform: translateX(0);
-    color: #00e5ff;
-    text-shadow: none;
-  }
-  /* Rest while COMING SOON text lifts upward */
-  9.01%, 50% {
-    opacity: 0.25;
-    transform: translateX(0);
-    color: #00e5ff;
-    text-shadow: none;
-  }
-  /* Wave 2: Dots move forward sequentially again */
-  54% {
-    opacity: 1;
-    transform: translateX(3px);
-    color: #ffffff;
-    text-shadow: 0 0 6px #00e5ff;
-  }
-  59% {
-    opacity: 0.25;
-    transform: translateX(0);
-    color: #00e5ff;
-    text-shadow: none;
-  }
-  /* Rest until next iteration */
-  59.01%, 100% {
-    opacity: 0.25;
-    transform: translateX(0);
-    color: #00e5ff;
-    text-shadow: none;
+    transform: translateY(-2px);
   }
 }
 
-/* Minimalist Scorecard Teaser */
-.ad-preview-container {
-  margin-bottom: 18px;
-}
-.ad-mockup-card {
-  background: #10141d;
-  border: 1px solid #1e2738;
-  border-radius: 12px;
-  padding: 14px;
-  transition: border-color 0.2s ease;
-}
-.ad-mockup-card:hover {
-  border-color: #00e5ff;
-}
-.ad-mockup-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-bottom: 8px;
-  border-bottom: 1px solid #1a2230;
-  margin-bottom: 10px;
-}
-.ad-mockup-dots {
-  display: flex;
-  gap: 5px;
-}
-.ad-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #2a3448;
-}
-.ad-mockup-title {
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 0.68rem;
-  font-weight: 600;
-  color: #8b949e;
-  letter-spacing: 0.06em;
-}
-
-.ad-student-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 10px;
-}
-.ad-avatar-box {
-  width: 34px;
-  height: 34px;
-  border-radius: 8px;
-  background: #161c28;
-  border: 1px solid #2a3448;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-.ad-avatar-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-.ad-avatar-fallback {
-  font-size: 1rem;
-}
-.ad-student-info {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-}
-.ad-student-name {
-  font-size: 0.84rem;
-  font-weight: 700;
-  color: #ffffff;
-}
-.ad-status-pill {
-  font-family: ui-monospace, monospace;
-  font-size: 0.68rem;
-  font-weight: 800;
-  color: #00e5ff;
-  background: rgba(0, 229, 255, 0.08);
-  border: 1px solid rgba(0, 229, 255, 0.25);
-  padding: 2px 7px;
-  border-radius: 4px;
-  letter-spacing: 0.06em;
-}
-
-.ad-score-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: #141a25;
-  border: 1px solid #1f2737;
-  padding: 8px 12px;
-  border-radius: 8px;
-  margin-bottom: 10px;
-}
-.ad-score-box {
-  display: flex;
-  flex-direction: column;
-}
-.ad-score-label {
-  font-family: ui-monospace, monospace;
-  font-size: 0.62rem;
-  font-weight: 700;
-  color: #8b949e;
-  letter-spacing: 0.08em;
-}
-.ad-score-val {
-  font-family: ui-monospace, monospace;
-  font-size: 1.35rem;
-  font-weight: 900;
-  color: #ffffff;
-  line-height: 1;
-}
-.ad-chips-box {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  align-items: flex-end;
-}
-.ad-chip {
-  font-family: ui-monospace, monospace;
-  font-size: 0.62rem;
-  font-weight: 700;
-  padding: 2px 6px;
-  border-radius: 4px;
-  background: #181f2d;
-  color: #ffffff;
-  border: 1px solid #2a3448;
-}
-.ad-chip.accent {
-  background: rgba(0, 229, 255, 0.08);
-  color: #00e5ff;
-  border-color: rgba(0, 229, 255, 0.35);
-  font-weight: 800;
-}
-
-.ad-mockup-bars {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 6px;
-  height: 32px;
-  padding-top: 4px;
-}
-.ad-bar-col {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  flex: 1;
-  height: 100%;
-  justify-content: flex-end;
-  gap: 3px;
-}
-.ad-bar {
-  width: 100%;
-  background: #1f2737;
-  border-radius: 2px;
-  transition: height 0.3s ease;
-}
-.ad-bar.highlight {
-  background: #00e5ff;
-}
-.ad-bar-lbl {
-  font-family: ui-monospace, monospace;
-  font-size: 0.58rem;
-  color: #8b949e;
-  font-weight: 600;
-}
-
-/* Ad Typography */
+/* Content Wrap */
 .ad-content-wrap {
-  text-align: center;
+  display: flex;
+  flex-direction: column;
 }
+
 .ad-headline {
   font-size: 1.25rem;
-  font-weight: 800;
-  line-height: 1.3;
-  color: #ffffff;
-  margin-bottom: 8px;
+  font-weight: 700;
+  line-height: 1.32;
+  color: var(--ad-text-primary);
   letter-spacing: -0.02em;
+  margin-bottom: 8px;
 }
+
 .ad-accent-text {
   display: block;
-  color: #00e5ff;
-  font-weight: 800;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--ad-accent);
+  margin-top: 3px;
+  letter-spacing: -0.01em;
 }
+
 .ad-description {
-  font-size: 0.84rem;
-  color: #8b949e;
+  font-size: 0.86rem;
   line-height: 1.55;
+  color: var(--ad-text-secondary);
   margin-bottom: 16px;
 }
-.ad-bold-text {
-  color: #f0f6fc;
-  font-weight: 700;
+
+.ad-description strong {
+  color: var(--ad-text-primary);
+  font-weight: 600;
 }
-.ad-highlight-accent {
-  color: #ffffff;
-  font-weight: 700;
-  border-bottom: 1px solid #00e5ff;
-  padding-bottom: 1px;
+
+.ad-highlight-note {
+  display: block;
+  margin-top: 5px;
+  color: var(--ad-text-muted);
+  font-size: 0.82rem;
 }
 
 /* Features Grid */
@@ -1400,165 +1234,210 @@ body {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 8px;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
+
 .ad-feature-item {
-  background: #10141d;
-  border: 1px solid #1e2738;
+  background: var(--ad-feat-bg);
+  border: 1px solid var(--ad-feat-border);
   border-radius: 10px;
-  padding: 8px 6px;
+  padding: 10px 8px;
+  text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
-  text-align: center;
   gap: 4px;
-}
-.ad-feat-icon {
-  font-size: 1rem;
-  color: #00e5ff;
-}
-.ad-feat-text strong {
-  display: block;
-  font-size: 0.72rem;
-  color: #ffffff;
-  line-height: 1.2;
-}
-.ad-feat-text span {
-  font-family: ui-monospace, monospace;
-  font-size: 0.62rem;
-  color: #8b949e;
+  transition: border-color 0.2s ease, transform 0.2s ease;
 }
 
-/* Instagram VIP Card */
+.ad-feature-item:hover {
+  transform: translateY(-1px);
+  border-color: var(--ad-accent);
+}
+
+.ad-feat-icon {
+  font-size: 1.15rem;
+  line-height: 1;
+}
+
+.ad-feat-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.ad-feat-text strong {
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--ad-feat-text);
+  line-height: 1.2;
+}
+
+.ad-feat-text span {
+  font-size: 0.68rem;
+  color: var(--ad-feat-sub);
+  line-height: 1.15;
+}
+
+/* Instagram Channel Row */
 .ad-insta-card {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  background: #10141d;
-  border: 1px solid #1e2738;
+  gap: 12px;
+  background: var(--ad-insta-bg);
+  border: 1px solid var(--ad-insta-border);
   border-radius: 12px;
   padding: 10px 14px;
   margin-bottom: 16px;
+  transition: all 0.2s ease;
 }
+
+.ad-insta-card:hover {
+  border-color: var(--ad-accent);
+}
+
 .ad-insta-left {
   display: flex;
   align-items: center;
   gap: 10px;
   text-align: left;
 }
+
 .ad-insta-logo-ring {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: #181f2e;
-  border: 1px solid #2a3448;
+  background: var(--ad-insta-ring);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
 }
+
 .ad-insta-svg {
   width: 16px;
   height: 16px;
-  color: #ffffff;
+  color: var(--ad-insta-icon);
 }
+
 .ad-insta-meta {
   display: flex;
   flex-direction: column;
 }
+
 .ad-insta-handle-row {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
 }
+
 .ad-insta-handle {
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: #ffffff;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--ad-text-primary);
 }
+
 .ad-verified-svg {
   width: 14px;
   height: 14px;
-  color: #00e5ff;
-}
-.ad-insta-sub {
-  font-size: 0.68rem;
-  color: #8b949e;
-}
-.ad-members-count {
-  font-family: ui-monospace, monospace;
-  font-size: 0.68rem;
-  font-weight: 700;
-  color: #00e5ff;
-  background: rgba(0, 229, 255, 0.08);
-  border: 1px solid rgba(0, 229, 255, 0.25);
-  padding: 3px 8px;
-  border-radius: 4px;
-  white-space: nowrap;
+  color: #10b981;
 }
 
-/* Solid High-Contrast Call to Action Button */
+.ad-insta-sub {
+  font-size: 0.72rem;
+  color: var(--ad-text-muted);
+}
+
+/* CTA and Dismiss Actions */
 .ad-actions {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
+
 .ad-cta-button {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   width: 100%;
-  padding: 13px 20px;
-  background: #ffffff;
-  color: #0a0d14;
-  font-size: 0.84rem;
-  font-weight: 800;
-  letter-spacing: 0.04em;
-  text-decoration: none;
+  height: 46px;
+  background: var(--ad-cta-bg);
+  color: var(--ad-cta-text);
   border-radius: 10px;
-  border: 1px solid #ffffff;
-  transition: all 0.15s ease;
-  cursor: pointer;
+  font-size: 0.86rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
 }
+
 .ad-cta-button:hover {
-  background: #00e5ff;
-  color: #000000;
-  border-color: #00e5ff;
+  background: var(--ad-cta-hover);
   transform: translateY(-1px);
-  box-shadow: 0 0 20px rgba(0, 229, 255, 0.35);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
 }
+
 .ad-cta-button:active {
   transform: translateY(0);
 }
+
+.ad-cta-button:focus-visible {
+  outline: 2px solid var(--ad-accent);
+  outline-offset: 2px;
+}
+
 .ad-cta-icon {
-  width: 16px;
-  height: 16px;
+  width: 17px;
+  height: 17px;
   flex-shrink: 0;
 }
 
+.ad-dismiss-btn {
+  background: transparent;
+  border: none;
+  color: var(--ad-dismiss-color);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 6px;
+  align-self: center;
+  transition: color 0.15s ease;
+}
+
+.ad-dismiss-btn:hover {
+  color: var(--ad-dismiss-hover);
+}
+
+.ad-dismiss-btn:focus-visible {
+  outline: 2px solid var(--ad-accent);
+  outline-offset: 2px;
+}
+
 @media (max-width: 480px) {
+  .promo-modal-backdrop {
+    padding: 12px;
+  }
   .ad-modal-card {
-    padding: 20px 16px 16px;
-    max-height: 94vh;
+    width: 100%;
+    max-width: 100%;
+    padding: 20px 14px 16px;
+    max-height: 92vh;
     overflow-y: auto;
   }
-  .ad-top-bar {
-    gap: 6px;
-    padding-right: 34px;
-    margin-bottom: 12px;
-  }
-  .ad-coming-soon-badge {
-    font-size: 0.65rem;
-    padding: 3px 8px;
-  }
   .ad-headline {
-    font-size: 1.08rem;
-    margin-bottom: 6px;
+    font-size: 1.05rem;
+    line-height: 1.3;
+  }
+  .ad-accent-text {
+    font-size: 0.98rem;
   }
   .ad-description {
     font-size: 0.78rem;
-    line-height: 1.45;
+    line-height: 1.48;
     margin-bottom: 12px;
   }
   .ad-features-grid {
@@ -1566,14 +1445,40 @@ body {
     margin-bottom: 12px;
   }
   .ad-feature-item {
-    padding: 6px 4px;
+    padding: 8px 4px;
+    border-radius: 8px;
+  }
+  .ad-feat-icon {
+    font-size: 1rem;
+  }
+  .ad-feat-text strong {
+    font-size: 0.7rem;
+  }
+  .ad-feat-text span {
+    font-size: 0.62rem;
+  }
+  .ad-insta-card {
+    padding: 8px 10px;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .ad-insta-handle {
+    font-size: 0.78rem;
+  }
+  .ad-insta-sub {
+    font-size: 0.68rem;
   }
   .ad-cta-button {
+    height: 42px;
     font-size: 0.8rem;
-    padding: 12px 14px;
   }
-  .ad-members-count {
-    display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ad-modal-card,
+  .ad-status-dot,
+  .ad-dot-bounce {
+    animation: none !important;
   }
 }
 
