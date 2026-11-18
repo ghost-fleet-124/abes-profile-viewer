@@ -535,8 +535,13 @@
   line-height: 1.5;
   margin-bottom: 14px;
 }
-.ad-description strong {
+.ad-description strong,
+.ad-description b {
   color: #e2e8f0;
+}
+.ad-bold-notice {
+  color: #fbbf24 !important;
+  font-weight: 800;
 }
 
 /* Features Grid */
