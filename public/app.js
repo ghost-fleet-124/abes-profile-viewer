@@ -383,4 +383,160 @@ document.addEventListener('DOMContentLoaded', () => {
 
   checkGatewayHealth();
   updateClearButton();
+
+  // =========================================================================
+  // ANTI-INSPECTION & DEVTOOLS TAMPER SHIELD (UI/UX Pro Max)
+  // =========================================================================
+  const securityModal = document.getElementById('securityModal');
+  let isDevToolsActive = false;
+  let devtoolsConsecutiveCleanChecks = 0;
+
+  function lockWebsiteForInspection() {
+    if (isDevToolsActive) return;
+    isDevToolsActive = true;
+    devtoolsConsecutiveCleanChecks = 0;
+
+    document.body.classList.add('is-devtools-locked');
+    if (securityModal) {
+      securityModal.classList.remove('hidden');
+      securityModal.setAttribute('aria-hidden', 'false');
+    }
+  }
+
+  function unlockWebsiteFromInspection() {
+    if (!isDevToolsActive) return;
+    isDevToolsActive = false;
+
+    document.body.classList.remove('is-devtools-locked');
+    if (securityModal) {
+      securityModal.classList.add('hidden');
+      securityModal.setAttribute('aria-hidden', 'true');
+    }
+  }
+
+  // Prevent closing via modal click
+  if (securityModal) {
+    securityModal.addEventListener('click', (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+    }, { capture: true });
+  }
+
+  // 1. Trap Right-Click Context Menu (Inspect Entry Point)
+  window.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+    lockWebsiteForInspection();
+  }, { capture: true });
+
+  // 2. Trap Keyboard Inspection Shortcuts
+  window.addEventListener('keydown', (e) => {
+    const isMac = navigator.platform && navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+    const isModifier = isMac ? e.metaKey : e.ctrlKey;
+    const key = e.key ? e.key.toUpperCase() : '';
+
+    // F12
+    if (e.key === 'F12' || e.keyCode === 123) {
+      e.preventDefault();
+      e.stopPropagation();
+      lockWebsiteForInspection();
+      return false;
+    }
+
+    // Ctrl+Shift+I / Cmd+Opt+I (Inspect)
+    // Ctrl+Shift+J / Cmd+Opt+J (Console)
+    // Ctrl+Shift+C / Cmd+Opt+C (Element Inspector)
+    // Ctrl+U / Cmd+Opt+U (View Source)
+    // Ctrl+Shift+K (Firefox Console)
+    if (
+      (isModifier && e.shiftKey && (key === 'I' || key === 'J' || key === 'C' || key === 'K')) ||
+      (isModifier && key === 'U') ||
+      (isMac && e.altKey && e.metaKey && (key === 'I' || key === 'J' || key === 'C' || key === 'U'))
+    ) {
+      e.preventDefault();
+      e.stopPropagation();
+      lockWebsiteForInspection();
+      return false;
+    }
+
+    // Block keyboard interactions outside modal while locked
+    if (isDevToolsActive) {
+      if (e.key === 'Escape' || e.key === 'Tab' || e.key === 'Enter') {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    }
+  }, { capture: true });
+
+  // 3. Multi-Vector DevTools Detection
+  function checkWindowDimensions() {
+    const threshold = 160;
+    const widthDiff = window.outerWidth - window.innerWidth;
+    const heightDiff = window.outerHeight - window.innerHeight;
+    return widthDiff > threshold || heightDiff > threshold;
+  }
+
+  let consoleDetectorFired = false;
+  const detectorObj = new Image();
+  Object.defineProperty(detectorObj, 'id', {
+    get: function () {
+      consoleDetectorFired = true;
+      return 'sec-shield';
+    }
+  });
+
+  function checkDebuggerTiming() {
+    try {
+      const t0 = performance.now();
+      new Function('debugger')();
+      const t1 = performance.now();
+      return (t1 - t0) > 100;
+    } catch {
+      return false;
+    }
+  }
+
+  function evaluateDevToolsState() {
+    consoleDetectorFired = false;
+    try {
+      console.log(detectorObj);
+      console.clear();
+    } catch {}
+
+    const isDimensionTriggered = checkWindowDimensions();
+    const isTimingTriggered = checkDebuggerTiming();
+    const isDetected = isDimensionTriggered || consoleDetectorFired || isTimingTriggered;
+
+    if (isDetected) {
+      devtoolsConsecutiveCleanChecks = 0;
+      lockWebsiteForInspection();
+    } else {
+      if (isDevToolsActive) {
+        devtoolsConsecutiveCleanChecks++;
+        if (devtoolsConsecutiveCleanChecks >= 2) {
+          unlockWebsiteFromInspection();
+        }
+      }
+    }
+  }
+
+  setInterval(evaluateDevToolsState, 450);
+  window.addEventListener('resize', evaluateDevToolsState);
+
+  // 4. DOM Tamper Resistance
+  if (window.MutationObserver && securityModal) {
+    const observer = new MutationObserver(() => {
+      if (isDevToolsActive) {
+        if (!document.body.contains(securityModal)) {
+          document.body.appendChild(securityModal);
+        }
+        if (securityModal.classList.contains('hidden')) {
+          securityModal.classList.remove('hidden');
+        }
+        if (!document.body.classList.contains('is-devtools-locked')) {
+          document.body.classList.add('is-devtools-locked');
+        }
+      }
+    });
+    observer.observe(document.body, { childList: true, attributes: true, subtree: true });
+  }
 });
