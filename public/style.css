@@ -1723,8 +1723,8 @@ body.is-devtools-locked .promo-modal-backdrop {
   background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(239, 68, 68, 0.1));
   border: 1px solid rgba(245, 158, 11, 0.35);
   border-radius: 14px;
-  padding: 16px 14px;
-  margin: 0 0 18px;
+  padding: 20px 16px;
+  margin: 0 0 22px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35), inset 0 0 20px rgba(245, 158, 11, 0.04);
 }
 
