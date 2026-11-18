@@ -1617,6 +1617,24 @@ body.is-devtools-locked .promo-modal-backdrop {
   box-shadow: 0 8px 16px rgba(239, 68, 68, 0.2);
 }
 
+/* Warning Sign Variant */
+.sec-warning-box {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.22), rgba(220, 38, 38, 0.32)) !important;
+  border-color: rgba(245, 158, 11, 0.6) !important;
+  color: #f59e0b !important;
+  box-shadow: 0 8px 24px rgba(245, 158, 11, 0.25) !important;
+}
+
+.sec-warning-svg {
+  width: 32px;
+  height: 32px;
+  stroke: #fbbf24;
+}
+
+.sec-warning-pulse {
+  border-color: rgba(245, 158, 11, 0.6) !important;
+}
+
 .sec-shield-svg {
   width: 28px;
   height: 28px;
@@ -1647,6 +1665,21 @@ body.is-devtools-locked .promo-modal-backdrop {
   margin-bottom: 12px;
 }
 
+.sec-warning-badge {
+  background: rgba(245, 158, 11, 0.16) !important;
+  border-color: rgba(245, 158, 11, 0.4) !important;
+}
+
+.sec-warning-dot {
+  background: #f59e0b !important;
+  box-shadow: 0 0 8px #f59e0b !important;
+}
+
+.sec-warning-badge-text {
+  color: #fbbf24 !important;
+  letter-spacing: 0.1em !important;
+}
+
 .sec-badge-dot {
   width: 7px;
   height: 7px;
@@ -1673,6 +1706,55 @@ body.is-devtools-locked .promo-modal-backdrop {
   line-height: 1.25;
   margin: 0 0 10px;
   letter-spacing: -0.02em;
+}
+
+.sec-warning-title {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  color: #f8fafc;
+  text-transform: uppercase;
+  margin: 0 0 14px;
+}
+
+/* Rhyme / Meme Quote Box */
+.sec-meme-quote-box {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(239, 68, 68, 0.1));
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  border-radius: 14px;
+  padding: 16px 14px;
+  margin: 0 0 18px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35), inset 0 0 20px rgba(245, 158, 11, 0.04);
+}
+
+.sec-meme-line {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 1.08rem;
+  font-weight: 700;
+  line-height: 1.42;
+  letter-spacing: 0.01em;
+  margin: 0;
+}
+
+.sec-meme-line.line-1 {
+  color: #fbbf24;
+  text-shadow: 0 0 14px rgba(245, 158, 11, 0.4);
+}
+
+.sec-meme-line.line-2 {
+  color: #fca5a5;
+  margin-top: 4px;
+  text-shadow: 0 0 14px rgba(239, 68, 68, 0.4);
+}
+
+@media (max-width: 480px) {
+  .sec-warning-title {
+    font-size: 1.18rem;
+  }
+  .sec-meme-line {
+    font-size: 0.98rem;
+  }
 }
 
 .sec-desc {

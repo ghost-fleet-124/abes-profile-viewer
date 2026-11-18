@@ -272,32 +272,36 @@
   <!-- Security Lockdown Modal (Anti-Inspection & Anti-Tamper Shield) -->
   <aside id="securityModal" class="security-modal-backdrop hidden" role="alertdialog" aria-modal="true" aria-labelledby="secModalTitle" aria-describedby="secModalDesc" aria-live="assertive">
     <div class="sec-modal-card">
+      <!-- Warning Sign Icon -->
       <div class="sec-icon-wrap" aria-hidden="true">
-        <span class="sec-pulse-ring"></span>
-        <span class="sec-pulse-ring sec-pulse-ring-delayed"></span>
-        <div class="sec-shield-box">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="sec-shield-svg">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01"/>
+        <span class="sec-pulse-ring sec-warning-pulse"></span>
+        <span class="sec-pulse-ring sec-pulse-ring-delayed sec-warning-pulse"></span>
+        <div class="sec-shield-box sec-warning-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" class="sec-shield-svg sec-warning-svg">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/>
+            <circle cx="12" cy="17" r="1" fill="currentColor"/>
           </svg>
         </div>
       </div>
 
-      <div class="sec-badge">
-        <span class="sec-badge-dot"></span>
-        <span class="sec-badge-text">SECURITY SHIELD ACTIVATED</span>
+      <div class="sec-badge sec-warning-badge">
+        <span class="sec-badge-dot sec-warning-dot"></span>
+        <span class="sec-badge-text sec-warning-badge-text">WARNING</span>
       </div>
 
-      <h2 id="secModalTitle" class="sec-title">Developer Tools Detected</h2>
+      <h2 id="secModalTitle" class="sec-title sec-warning-title">Restriction Prohibited</h2>
 
-      <p id="secModalDesc" class="sec-desc">
-        Inspecting, debugging, or analyzing this website via DevTools or browser inspection extensions has been restricted for security and privacy compliance.
-      </p>
+      <!-- Humorous Hindi Rhyme Message Card -->
+      <div class="sec-meme-quote-box" id="secModalDesc">
+        <p class="sec-meme-line line-1">Beta Jab Mai Pheli Mai Tha</p>
+        <p class="sec-meme-line line-2">Tabb Tuu Theli Mai Tha</p>
+      </div>
 
       <div class="sec-status-box">
         <div class="sec-status-header">
           <span class="sec-status-ping"></span>
-          <span class="sec-status-lead">System Status: <strong>Locked</strong></span>
+          <span class="sec-status-lead">Inspection Detected: <strong>Page Locked</strong></span>
         </div>
         <p class="sec-status-instruction">
           Close Developer Tools (F12 or Inspect window) to restore and unlock the website.
