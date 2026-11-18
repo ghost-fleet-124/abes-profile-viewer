@@ -150,3 +150,47 @@
     font-size: 0.86rem;
   }
 }
+
+/* Instagram Redirect Button */
+.instagram-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-full);
+  color: var(--primary-navy);
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-normal);
+  cursor: pointer;
+}
+.instagram-btn:hover {
+  background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+  color: #ffffff;
+  border-color: transparent;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(220, 39, 67, 0.28);
+}
+.instagram-icon {
+  width: 17px;
+  height: 17px;
+  flex-shrink: 0;
+  transition: transform var(--transition-fast);
+}
+.instagram-btn:hover .instagram-icon {
+  transform: scale(1.1);
+}
+.admin-insta-link {
+  color: var(--primary-navy);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color var(--transition-fast);
+}
+.admin-insta-link:hover {
+  color: #e1306c;
+}

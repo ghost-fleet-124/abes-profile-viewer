@@ -994,6 +994,11 @@ app.all('/api/*', (req, res) => {
   res.status(404).json({ error: 'API endpoint not found.' });
 });
 
+app.get(['/insta', '/instagram'], (req, res) => {
+  const target = process.env.INSTAGRAM_URL || 'https://www.instagram.com/';
+  res.redirect(target);
+});
+
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
