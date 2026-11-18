@@ -12,6 +12,42 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:ital,wght@1,700;1,800;1,900&display=swap" rel="stylesheet">
 </head>
 <body>
+  <!-- Theme Toggle Floating Switch -->
+  <aside class="theme-switch-container">
+    <button type="button" id="themeToggleBtn" class="theme-toggle-btn" role="switch" aria-checked="false" aria-label="Toggle between dark and light mode" title="Switch Theme">
+      <span class="toggle-track">
+        <span class="toggle-stars" aria-hidden="true">
+          <span class="star s1">✦</span>
+          <span class="star s2">✧</span>
+          <span class="star s3">✦</span>
+        </span>
+        <span class="toggle-clouds" aria-hidden="true">
+          <span class="cloud c1"></span>
+          <span class="cloud c2"></span>
+        </span>
+        <span class="toggle-thumb" aria-hidden="true">
+          <!-- Sun Icon -->
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4.5"></circle>
+            <path d="M12 2v2"></path>
+            <path d="M12 20v2"></path>
+            <path d="m4.93 4.93 1.41 1.41"></path>
+            <path d="m17.66 17.66 1.41 1.41"></path>
+            <path d="M2 12h2"></path>
+            <path d="M20 12h2"></path>
+            <path d="m6.34 17.66-1.41 1.41"></path>
+            <path d="m19.07 4.93-1.41 1.41"></path>
+          </svg>
+          <!-- Moon Icon -->
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </span>
+      </span>
+      <span class="theme-label-sr visually-hidden">Toggle Theme</span>
+    </button>
+  </aside>
+
   <div class="app-wrapper">
     <header class="app-header">
       <div class="brand-crest">

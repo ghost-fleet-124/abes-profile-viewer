@@ -259,6 +259,81 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // Theme Toggle (Light / Dark Mode) with Circular View Transition
+  const themeToggleBtn = document.getElementById('themeToggleBtn');
+  const THEME_STORAGE_KEY = 'abes_theme_preference';
+
+  function applyTheme(theme) {
+    if (theme === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      if (themeToggleBtn) {
+        themeToggleBtn.setAttribute('aria-checked', 'true');
+        themeToggleBtn.classList.add('is-dark');
+      }
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+      if (themeToggleBtn) {
+        themeToggleBtn.setAttribute('aria-checked', 'false');
+        themeToggleBtn.classList.remove('is-dark');
+      }
+    }
+  }
+
+  // Initialize theme from storage or system preference
+  const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+  const systemPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const initialTheme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
+  applyTheme(initialTheme);
+
+  // Switch Theme with circular wave animation originating from the button
+  function switchThemeWithAnimation(event) {
+    const isCurrentlyDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const nextTheme = isCurrentlyDark ? 'light' : 'dark';
+    localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (document.startViewTransition && !prefersReducedMotion) {
+      let x = window.innerWidth - 40;
+      let y = 40;
+      if (themeToggleBtn) {
+        const rect = themeToggleBtn.getBoundingClientRect();
+        x = rect.left + rect.width / 2;
+        y = rect.top + rect.height / 2;
+      }
+      const endRadius = Math.hypot(
+        Math.max(x, window.innerWidth - x),
+        Math.max(y, window.innerHeight - y)
+      );
+
+      const transition = document.startViewTransition(() => {
+        applyTheme(nextTheme);
+      });
+
+      transition.ready.then(() => {
+        document.documentElement.animate(
+          {
+            clipPath: [
+              `circle(0px at ${x}px ${y}px)`,
+              `circle(${endRadius}px at ${x}px ${y}px)`
+            ]
+          },
+          {
+            duration: 520,
+            easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+            pseudoElement: '::view-transition-new(root)'
+          }
+        );
+      });
+    } else {
+      applyTheme(nextTheme);
+    }
+  }
+
+  if (themeToggleBtn) {
+    themeToggleBtn.addEventListener('click', switchThemeWithAnimation);
+  }
+
   checkGatewayHealth();
   updateClearButton();
 });
