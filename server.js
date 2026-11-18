@@ -3,6 +3,7 @@
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
 const crypto = require('crypto');
 
 const app = express();
@@ -666,6 +667,93 @@ app.get('/api/health', (req, res) => {
     keepAliveEnabled: process.env.ERP_KEEPALIVE_ENABLED !== 'false',
     keepAliveIntervalMinutes: parseInt(process.env.ERP_KEEPALIVE_INTERVAL_MINUTES, 10) || 10,
     lastKeepAlive: lastKeepAliveTime ? new Date(lastKeepAliveTime).toISOString() : null
+  });
+});
+
+const POLL_FILE_PATH = path.join(__dirname, 'poll-data.json');
+
+function loadPollData() {
+  try {
+    if (fs.existsSync(POLL_FILE_PATH)) {
+      const raw = fs.readFileSync(POLL_FILE_PATH, 'utf8');
+      const parsed = JSON.parse(raw);
+      return {
+        yes: typeof parsed.yes === 'number' ? parsed.yes : 0,
+        no: typeof parsed.no === 'number' ? parsed.no : 0,
+        votedIps: parsed.votedIps && typeof parsed.votedIps === 'object' ? parsed.votedIps : {}
+      };
+    }
+  } catch (e) {
+    console.warn('[Poll] Could not load poll-data.json, starting fresh');
+  }
+  return { yes: 0, no: 0, votedIps: {} };
+}
+
+function savePollData(data) {
+  try {
+    fs.writeFileSync(POLL_FILE_PATH, JSON.stringify(data, null, 2), 'utf8');
+  } catch (e) {
+    console.error('[Poll] Failed to write poll-data.json', e);
+  }
+}
+
+app.get('/api/poll', (req, res) => {
+  const pollData = loadPollData();
+  const total = pollData.yes + pollData.no;
+  const yesPercent = total > 0 ? Math.round((pollData.yes / total) * 100) : 0;
+  const noPercent = total > 0 ? Math.round((pollData.no / total) * 100) : 0;
+  const clientIp = req.ip || req.socket.remoteAddress || 'unknown';
+  const hasVoted = Boolean(pollData.votedIps && pollData.votedIps[clientIp]);
+
+  res.json({
+    yes: pollData.yes,
+    no: pollData.no,
+    total,
+    yesPercent,
+    noPercent,
+    hasVoted
+  });
+});
+
+app.post('/api/poll/vote', (req, res) => {
+  const { option } = req.body || {};
+  if (option !== 'yes' && option !== 'no') {
+    return res.status(400).json({ error: 'Invalid vote option. Must be yes or no.' });
+  }
+
+  const pollData = loadPollData();
+  const clientIp = req.ip || req.socket.remoteAddress || 'unknown';
+  if (pollData.votedIps && pollData.votedIps[clientIp]) {
+    const total = pollData.yes + pollData.no;
+    const yesPercent = total > 0 ? Math.round((pollData.yes / total) * 100) : 0;
+    const noPercent = total > 0 ? Math.round((pollData.no / total) * 100) : 0;
+    return res.status(200).json({
+      alreadyVoted: true,
+      yes: pollData.yes,
+      no: pollData.no,
+      total,
+      yesPercent,
+      noPercent
+    });
+  }
+
+  if (!pollData.votedIps) pollData.votedIps = {};
+  pollData.votedIps[clientIp] = option;
+  pollData[option]++;
+  savePollData(pollData);
+
+  const total = pollData.yes + pollData.no;
+  const yesPercent = total > 0 ? Math.round((pollData.yes / total) * 100) : 0;
+  const noPercent = total > 0 ? Math.round((pollData.no / total) * 100) : 0;
+
+  res.json({
+    success: true,
+    yes: pollData.yes,
+    no: pollData.no,
+    total,
+    yesPercent,
+    noPercent,
+    voted: option
   });
 });
 
