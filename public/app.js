@@ -137,7 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
     displayRoll.textContent = rollNumber;
 
     downloadBtn.href = currentObjectUrl;
-    downloadBtn.download = `ABES_${rollNumber}.jpg`;
+    downloadBtn.download = `GHOST-FLEET-${rollNumber}.jpg`;
     openNewTabBtn.href = currentObjectUrl;
 
     resultState.classList.remove('hidden');
@@ -192,13 +192,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const trimmedRoll = rawRoll.trim();
 
     if (!trimmedRoll) {
-      showError('Validation Error', 'Please enter a student roll number.');
+      showError('Validation Error', 'Please enter a student admission number.');
       rollNumberInput.focus();
       return;
     }
 
     if (trimmedRoll.length < 3 || trimmedRoll.length > 30) {
-      showError('Validation Error', 'Roll number must be between 3 and 30 characters.');
+      showError('Validation Error', 'Admission number must be between 3 and 30 characters.');
       rollNumberInput.focus();
       return;
     }
@@ -206,7 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!ROLL_NUMBER_PATTERN.test(trimmedRoll)) {
       showError(
         'Validation Error',
-        'Roll number contains invalid characters. Use only letters, numbers, hyphens, and underscores.'
+        'Admission number contains invalid characters. Use only letters, numbers, hyphens, and underscores.'
       );
       rollNumberInput.focus();
       return;
@@ -231,10 +231,11 @@ document.addEventListener('DOMContentLoaded', () => {
           errData = { error: `Server returned unexpected status ${response.status}` };
         }
 
-        const msg = errData.error || 'Failed to retrieve profile image.';
+        const rawMsg = errData.error || 'Failed to retrieve profile image.';
+        const msg = rawMsg.replace(/roll number/gi, 'admission number');
 
         if (response.status === 400) {
-          showError('Invalid Roll Number', msg);
+          showError('Invalid Admission Number', msg);
         } else if (response.status === 401) {
           showError('API Session Expired', 'Wait For Admin to fix the issue.', true);
           systemStatus.className = 'system-status-badge status-warning';
