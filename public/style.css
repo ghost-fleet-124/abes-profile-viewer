@@ -270,36 +270,154 @@
 .ad-top-bar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   margin-bottom: 16px;
   padding-right: 36px;
 }
-.ad-badge-mono {
+
+/* Animated COMING SOON...... Status Badge */
+.ad-coming-soon-badge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 3px 8px;
-  background: rgba(0, 229, 255, 0.08);
-  border: 1px solid rgba(0, 229, 255, 0.25);
-  border-radius: 4px;
+  gap: 7px;
+  padding: 4px 10px;
+  background: rgba(0, 229, 255, 0.06);
+  border: 1px solid rgba(0, 229, 255, 0.22);
+  border-radius: 6px;
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 0.68rem;
+  font-size: 0.7rem;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   color: #00e5ff;
+  user-select: none;
+  transition: all 0.25s ease;
 }
-.ad-badge-dot {
-  width: 5px;
-  height: 5px;
+.ad-coming-soon-badge:hover {
+  background: rgba(0, 229, 255, 0.1);
+  border-color: rgba(0, 229, 255, 0.4);
+  box-shadow: 0 0 12px rgba(0, 229, 255, 0.2);
+}
+
+/* Live Status Pulsing Dot */
+.ad-badge-pulse-dot {
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   background: #00e5ff;
+  box-shadow: 0 0 6px #00e5ff;
+  flex-shrink: 0;
+  animation: badgeDotPing 1.8s ease-in-out infinite;
 }
-.ad-eta-mono {
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  color: #8b949e;
+@keyframes badgeDotPing {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.8;
+    box-shadow: 0 0 4px #00e5ff;
+  }
+  50% {
+    transform: scale(1.35);
+    opacity: 1;
+    box-shadow: 0 0 10px #00e5ff, 0 0 16px rgba(0, 229, 255, 0.4);
+  }
+}
+
+/* COMING SOON Text with Upward Motion */
+.ad-cs-text {
+  display: inline-block;
+  will-change: transform, color, text-shadow;
+  animation: csTextLift 3s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
+}
+
+@keyframes csTextLift {
+  0%, 26% {
+    transform: translateY(0);
+    color: #00e5ff;
+    text-shadow: none;
+  }
+  36% {
+    transform: translateY(-3.5px);
+    color: #ffffff;
+    text-shadow: 0 0 8px rgba(0, 229, 255, 0.7);
+  }
+  46%, 100% {
+    transform: translateY(0);
+    color: #00e5ff;
+    text-shadow: none;
+  }
+}
+
+/* Propagating Dots Container */
+.ad-cs-dots {
+  display: inline-flex;
+  align-items: center;
+  letter-spacing: 0.14em;
+  margin-left: 1px;
+}
+
+.ad-cs-dot {
+  display: inline-block;
+  will-change: transform, opacity, color;
+  opacity: 0.25;
+  color: #00e5ff;
+  font-weight: 800;
+  animation: csDotPropagate 3s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
+}
+
+/* Cascade Delays for Moving Forward Wave */
+.ad-cs-dot.d1 { animation-delay: 0s; }
+.ad-cs-dot.d2 { animation-delay: 0.08s; }
+.ad-cs-dot.d3 { animation-delay: 0.16s; }
+.ad-cs-dot.d4 { animation-delay: 0.24s; }
+.ad-cs-dot.d5 { animation-delay: 0.32s; }
+.ad-cs-dot.d6 { animation-delay: 0.40s; }
+
+@keyframes csDotPropagate {
+  /* Wave 1: Dots move forward sequentially */
+  0% {
+    opacity: 0.25;
+    transform: translateX(0);
+    color: #00e5ff;
+    text-shadow: none;
+  }
+  4% {
+    opacity: 1;
+    transform: translateX(3px);
+    color: #ffffff;
+    text-shadow: 0 0 6px #00e5ff;
+  }
+  9% {
+    opacity: 0.25;
+    transform: translateX(0);
+    color: #00e5ff;
+    text-shadow: none;
+  }
+  /* Rest while COMING SOON text lifts upward */
+  9.01%, 50% {
+    opacity: 0.25;
+    transform: translateX(0);
+    color: #00e5ff;
+    text-shadow: none;
+  }
+  /* Wave 2: Dots move forward sequentially again */
+  54% {
+    opacity: 1;
+    transform: translateX(3px);
+    color: #ffffff;
+    text-shadow: 0 0 6px #00e5ff;
+  }
+  59% {
+    opacity: 0.25;
+    transform: translateX(0);
+    color: #00e5ff;
+    text-shadow: none;
+  }
+  /* Rest until next iteration */
+  59.01%, 100% {
+    opacity: 0.25;
+    transform: translateX(0);
+    color: #00e5ff;
+    text-shadow: none;
+  }
 }
 
 /* Minimalist Scorecard Teaser */
@@ -497,6 +615,10 @@
   line-height: 1.55;
   margin-bottom: 16px;
 }
+.ad-bold-text {
+  color: #f0f6fc;
+  font-weight: 700;
+}
 .ad-highlight-accent {
   color: #ffffff;
   font-weight: 700;
@@ -656,6 +778,10 @@
     gap: 6px;
     padding-right: 34px;
     margin-bottom: 12px;
+  }
+  .ad-coming-soon-badge {
+    font-size: 0.65rem;
+    padding: 3px 8px;
   }
   .ad-headline {
     font-size: 1.08rem;
