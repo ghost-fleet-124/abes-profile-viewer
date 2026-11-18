@@ -18,8 +18,9 @@ const ERP_KEEPALIVE_URL = process.env.ERP_KEEPALIVE_URL || 'https://erp.abes.ac.
 const RATE_LIMIT_WINDOW_MS = parseInt(process.env.RATE_LIMIT_WINDOW_MS, 10) || 60000;
 const RATE_LIMIT_MAX = parseInt(process.env.RATE_LIMIT_MAX, 10) || 30;
 const ERP_TIMEOUT_MS = parseInt(process.env.ERP_TIMEOUT_MS, 10) || 15000;
-const ERP_KEEPALIVE_INTERVAL_MINUTES = Math.max(1, parseInt(process.env.ERP_KEEPALIVE_INTERVAL_MINUTES, 10) || 10);
-const ERP_KEEPALIVE_STARTUP_DELAY_MS = parseInt(process.env.ERP_KEEPALIVE_STARTUP_DELAY_MS, 10) || 30000;
+const ERP_KEEPALIVE_INTERVAL_MINUTES = Math.max(1, parseInt(process.env.ERP_KEEPALIVE_INTERVAL_MINUTES, 10) || 1);
+const ERP_KEEPALIVE_INTERVAL_SECONDS = Math.max(15, parseInt(process.env.ERP_KEEPALIVE_INTERVAL_SECONDS, 10) || (ERP_KEEPALIVE_INTERVAL_MINUTES * 60));
+const ERP_KEEPALIVE_STARTUP_DELAY_MS = Math.max(500, parseInt(process.env.ERP_KEEPALIVE_STARTUP_DELAY_MS, 10) || 2000);
 const MAX_IMAGE_SIZE_BYTES = parseInt(process.env.MAX_IMAGE_SIZE_BYTES, 10) || 5 * 1024 * 1024;
 const CACHE_TTL_MS = parseInt(process.env.CACHE_TTL_MS, 10) || 5 * 60 * 1000;
 const MAX_CACHE_SIZE = 500;
@@ -293,6 +294,17 @@ class ErpCookieJar {
     return Boolean(this.get(name));
   }
 
+  touchSessionCookies() {
+    // When keepalive or ERP request succeeds, ASP.NET sliding session window is refreshed upstream.
+    // Extend in-memory expiration of session cookies so they remain active continuously.
+    const extendedExpiry = Date.now() + 24 * 60 * 60 * 1000;
+    for (const [name, entry] of this.cookies.entries()) {
+      if (entry && entry.expires) {
+        entry.expires = extendedExpiry;
+      }
+    }
+  }
+
   storeCookies(setCookieHeaders, requestUrl) {
     if (!setCookieHeaders) return;
     const headerList = Array.isArray(setCookieHeaders) ? setCookieHeaders : [setCookieHeaders];
@@ -372,6 +384,13 @@ function checkCredentialsChanged(myAuth, sessionId) {
     if (erpSessionStatus === 'expired') {
       erpSessionStatus = 'unknown';
     }
+    // Update cookies in the jar with new credentials from env
+    if (myAuth) {
+      erpCookieJar.set('MyAuth', myAuth, { path: '/' });
+    }
+    if (sessionId) {
+      erpCookieJar.set('ASP.NET_SessionId', sessionId, { path: '/' });
+    }
   }
 }
 
@@ -412,66 +431,97 @@ async function checkErpSession() {
   const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
   try {
-    const upstreamRes = await fetch(keepAliveUrl, {
-      method: 'GET',
-      headers: {
-        'Cookie': cookieString,
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
-        'Referer': 'https://erp.abes.ac.in/',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
-      },
-      redirect: 'manual',
-      signal: controller.signal
-    });
+    let currentUrl = keepAliveUrl;
+    let redirectHops = 0;
+    const maxRedirects = 2;
+
+    while (redirectHops <= maxRedirects) {
+      const currentCookies = erpCookieJar.getCookieString(currentUrl);
+      const upstreamRes = await fetch(currentUrl, {
+        method: 'GET',
+        headers: {
+          'Cookie': currentCookies,
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+          'Referer': 'https://erp.abes.ac.in/',
+          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+        },
+        redirect: 'manual',
+        signal: controller.signal
+      });
+
+      const setCookies = upstreamRes.headers.getSetCookie ? upstreamRes.headers.getSetCookie() : [upstreamRes.headers.get('set-cookie')];
+      erpCookieJar.storeCookies(setCookies, currentUrl);
+
+      const status = upstreamRes.status;
+      const rawLocation = upstreamRes.headers.get('location') || '';
+      const location = rawLocation.toLowerCase();
+
+      if (status === 301 || status === 302) {
+        if (location.includes('login')) {
+          clearTimeout(timeoutId);
+          erpSessionStatus = 'expired';
+          return { authenticated: false, status: 'expired', reason: 'redirect_to_login' };
+        }
+
+        let nextUrl;
+        try {
+          nextUrl = new URL(rawLocation, currentUrl).href;
+        } catch {
+          nextUrl = null;
+        }
+
+        if (nextUrl && isSafeUpstreamUrl(nextUrl) && redirectHops < maxRedirects) {
+          currentUrl = nextUrl;
+          redirectHops++;
+          continue;
+        } else {
+          clearTimeout(timeoutId);
+          erpSessionStatus = 'active';
+          erpCookieJar.touchSessionCookies();
+          return { authenticated: true, status: 'active', reason: 'authenticated_redirect' };
+        }
+      }
+
+      clearTimeout(timeoutId);
+
+      if (status === 401 || status === 403) {
+        erpSessionStatus = 'expired';
+        return { authenticated: false, status: 'expired', reason: 'unauthorized' };
+      }
+
+      if (status >= 500) {
+        erpSessionStatus = 'temporarily_unavailable';
+        return { authenticated: false, status: 'temporarily_unavailable', reason: 'upstream_error' };
+      }
+
+      if (status === 200) {
+        const text = await upstreamRes.text();
+        const lower = text.toLowerCase();
+
+        const isLoginPage = lower.includes('<title>login') ||
+                            lower.includes('txtusername') ||
+                            (lower.includes('txtuser') && lower.includes('login.aspx')) ||
+                            lower.includes('name="txtpassword"') ||
+                            (lower.includes('object moved to') && lower.includes('login'));
+
+        if (isLoginPage) {
+          erpSessionStatus = 'expired';
+          return { authenticated: false, status: 'expired', reason: 'login_form_returned' };
+        }
+
+        erpSessionStatus = 'active';
+        erpCookieJar.touchSessionCookies();
+        return { authenticated: true, status: 'active' };
+      }
+
+      erpSessionStatus = 'temporarily_unavailable';
+      return { authenticated: false, status: 'temporarily_unavailable', reason: `status_${status}` };
+    }
 
     clearTimeout(timeoutId);
-
-    const setCookies = upstreamRes.headers.getSetCookie ? upstreamRes.headers.getSetCookie() : [upstreamRes.headers.get('set-cookie')];
-    erpCookieJar.storeCookies(setCookies, keepAliveUrl);
-
-    const status = upstreamRes.status;
-    const location = (upstreamRes.headers.get('location') || '').toLowerCase();
-
-    if (status === 301 || status === 302) {
-      if (location.includes('login')) {
-        erpSessionStatus = 'expired';
-        return { authenticated: false, status: 'expired', reason: 'redirect_to_login' };
-      }
-      erpSessionStatus = 'temporarily_unavailable';
-      return { authenticated: false, status: 'temporarily_unavailable', reason: 'unexpected_redirect' };
-    }
-
-    if (status === 401 || status === 403) {
-      erpSessionStatus = 'expired';
-      return { authenticated: false, status: 'expired', reason: 'unauthorized' };
-    }
-
-    if (status >= 500) {
-      erpSessionStatus = 'temporarily_unavailable';
-      return { authenticated: false, status: 'temporarily_unavailable', reason: 'upstream_error' };
-    }
-
-    if (status === 200) {
-      const text = await upstreamRes.text();
-      const lower = text.toLowerCase();
-
-      const isLoginPage = lower.includes('<title>login') ||
-                          lower.includes('txtusername') ||
-                          (lower.includes('txtuser') && lower.includes('login.aspx')) ||
-                          lower.includes('name="txtpassword"') ||
-                          lower.includes('object moved to');
-
-      if (isLoginPage) {
-        erpSessionStatus = 'expired';
-        return { authenticated: false, status: 'expired', reason: 'login_form_returned' };
-      }
-
-      erpSessionStatus = 'active';
-      return { authenticated: true, status: 'active' };
-    }
-
-    erpSessionStatus = 'temporarily_unavailable';
-    return { authenticated: false, status: 'temporarily_unavailable', reason: `status_${status}` };
+    erpSessionStatus = 'active';
+    erpCookieJar.touchSessionCookies();
+    return { authenticated: true, status: 'active' };
 
   } catch (err) {
     clearTimeout(timeoutId);
@@ -678,16 +728,32 @@ async function keepErpSessionAlive() {
   }
 
   keepAliveInProgress = true;
-  console.log('[ERP KEEPALIVE] Started');
+  console.log('[ERP KEEPALIVE] Heartbeat cycle initiated');
 
   try {
-    const check = await checkErpSession();
+    let check = await checkErpSession();
     lastKeepAliveTime = Date.now();
+
     if (check.authenticated) {
-      console.log('[ERP KEEPALIVE] Success - status 200');
-      console.log('[ERP KEEPALIVE] ERP session appears active');
+      console.log('[ERP KEEPALIVE] Success - ERP session verified active and refreshed');
     } else if (check.status === 'expired') {
       console.warn('[ERP KEEPALIVE] ERP session expired');
+
+      // Automated Self-Healing: if login credentials exist in env, auto-reauthenticate immediately!
+      if (process.env.ERP_USERNAME && process.env.ERP_PASSWORD) {
+        console.log('[ERP KEEPALIVE] Credentials present. Executing automated background re-login...');
+        const loginRes = await performErpLogin();
+        if (loginRes.success) {
+          console.log('[ERP KEEPALIVE] Background re-login succeeded! Session restored to active.');
+          erpSessionStatus = 'active';
+    erpCookieJar.touchSessionCookies();
+        } else {
+          console.warn(`[ERP KEEPALIVE] Background re-login failed: ${loginRes.code} - ${loginRes.message}`);
+          erpSessionStatus = 'expired';
+        }
+      } else {
+        syncCredentialsToJar();
+      }
     } else {
       console.warn(`[ERP KEEPALIVE] Upstream status: ${check.reason || check.status}`);
     }
@@ -714,23 +780,66 @@ function startKeepAliveScheduler() {
     return;
   }
 
-  const intervalMinutes = Math.max(1, parseInt(process.env.ERP_KEEPALIVE_INTERVAL_MINUTES, 10) || 10);
-  const startupDelayMs = parseInt(process.env.ERP_KEEPALIVE_STARTUP_DELAY_MS, 10) || 30000;
+  const intervalMinutes = Math.max(1, parseInt(process.env.ERP_KEEPALIVE_INTERVAL_MINUTES, 10) || 1);
+  const intervalSeconds = Math.max(15, parseInt(process.env.ERP_KEEPALIVE_INTERVAL_SECONDS, 10) || (intervalMinutes * 60));
+  const startupDelayMs = Math.max(500, parseInt(process.env.ERP_KEEPALIVE_STARTUP_DELAY_MS, 10) || 2000);
 
-  console.log(`[ERP KEEPALIVE] Scheduler initialized. First run in ${startupDelayMs / 1000}s, interval ${intervalMinutes}m.`);
+  console.log(`[ERP KEEPALIVE] Scheduler initialized. First run in ${startupDelayMs / 1000}s, interval ${intervalSeconds}s.`);
 
   keepAliveTimer = setTimeout(async () => {
     await keepErpSessionAlive();
-    keepAliveInterval = setInterval(keepErpSessionAlive, intervalMinutes * 60 * 1000);
-    if (keepAliveInterval.unref) keepAliveInterval.unref();
+    keepAliveInterval = setInterval(keepErpSessionAlive, intervalSeconds * 1000);
+    if (process.env.NODE_ENV === 'test' && keepAliveInterval.unref) {
+      keepAliveInterval.unref();
+    }
   }, startupDelayMs);
 
-  if (keepAliveTimer.unref) keepAliveTimer.unref();
+  if (process.env.NODE_ENV === 'test' && keepAliveTimer.unref) {
+    keepAliveTimer.unref();
+  }
 }
 
 function stopKeepAliveScheduler() {
   if (keepAliveTimer) clearTimeout(keepAliveTimer);
   if (keepAliveInterval) clearInterval(keepAliveInterval);
+}
+
+let selfPingInterval = null;
+
+function startSelfPingScheduler() {
+  if (process.env.NODE_ENV === 'test' || process.env.SELF_PING_ENABLED === 'false') {
+    return;
+  }
+
+  const domain = process.env.RAILWAY_PUBLIC_DOMAIN || 
+                 process.env.RAILWAY_STATIC_URL || 
+                 process.env.APP_URL || 
+                 process.env.SELF_PING_URL;
+
+  if (!domain) {
+    return;
+  }
+
+  const cleanDomain = domain.startsWith('http://') || domain.startsWith('https://') ? domain : `https://${domain}`;
+  const pingUrl = `${cleanDomain.replace(/\/$/, '')}/api/health`;
+  const pingIntervalMs = (parseInt(process.env.SELF_PING_INTERVAL_MINUTES, 10) || 5) * 60 * 1000;
+
+  console.log(`[SELF PING] Railway anti-sleep heartbeat enabled. Pinging ${pingUrl} every ${pingIntervalMs / 60000}m.`);
+
+  selfPingInterval = setInterval(async () => {
+    try {
+      const res = await fetch(pingUrl, {
+        headers: { 'User-Agent': 'Railway-AntiSleep-KeepAlive/1.0' }
+      });
+      console.log(`[SELF PING] Container heartbeat dispatched. Status: ${res.status}`);
+    } catch (err) {
+      console.warn(`[SELF PING] Container heartbeat ping error: ${err.message}`);
+    }
+  }, pingIntervalMs);
+}
+
+function stopSelfPingScheduler() {
+  if (selfPingInterval) clearInterval(selfPingInterval);
 }
 
 app.get('/api/health', (req, res) => {
@@ -749,7 +858,8 @@ app.get('/api/health', (req, res) => {
     rateLimitMax: RATE_LIMIT_MAX,
     windowSeconds: RATE_LIMIT_WINDOW_MS / 1000,
     keepAliveEnabled: process.env.ERP_KEEPALIVE_ENABLED !== 'false',
-    keepAliveIntervalMinutes: parseInt(process.env.ERP_KEEPALIVE_INTERVAL_MINUTES, 10) || 10,
+    keepAliveIntervalMinutes: parseInt(process.env.ERP_KEEPALIVE_INTERVAL_MINUTES, 10) || ERP_KEEPALIVE_INTERVAL_MINUTES,
+    keepAliveIntervalSeconds: parseInt(process.env.ERP_KEEPALIVE_INTERVAL_SECONDS, 10) || ERP_KEEPALIVE_INTERVAL_SECONDS,
     lastKeepAlive: lastKeepAliveTime ? new Date(lastKeepAliveTime).toISOString() : null
   });
 });
@@ -935,6 +1045,7 @@ app.get(['/api/profile/:rollNumber', '/api/profile/:rollNumber/json'], rateLimit
     }
 
     erpSessionStatus = 'active';
+    erpCookieJar.touchSessionCookies();
 
     const cleanContentType = contentType.split(';')[0].trim();
     const base64Data = buffer.toString('base64');
@@ -1049,14 +1160,16 @@ if (require.main === module) {
     const hasCookies = Boolean(process.env.ERP_MYAUTH && process.env.ERP_ASP_NET_SESSION_ID);
     console.log(` Credentials configured: ${hasUserPass ? 'USERNAME/PASSWORD' : hasCookies ? 'SESSION COOKIES' : 'NONE'}`);
     console.log(` Rate Limit: ${RATE_LIMIT_MAX} req / ${RATE_LIMIT_WINDOW_MS / 1000}s per IP`);
-    console.log(` Keep-Alive Interval: ${ERP_KEEPALIVE_INTERVAL_MINUTES} minutes`);
+    console.log(` Keep-Alive Interval: ${ERP_KEEPALIVE_INTERVAL_SECONDS}s (${ERP_KEEPALIVE_INTERVAL_MINUTES}m)`);
     console.log(`====================================================`);
     startKeepAliveScheduler();
+    startSelfPingScheduler();
   });
 
   const shutdown = (signal) => {
     console.log(`[Server] Received ${signal}. Starting graceful shutdown...`);
     stopKeepAliveScheduler();
+    stopSelfPingScheduler();
     if (server) {
       server.close(() => {
         console.log('[Server] HTTP server closed gracefully.');
@@ -1100,6 +1213,8 @@ module.exports = {
   keepErpSessionAlive,
   startKeepAliveScheduler,
   stopKeepAliveScheduler,
+  startSelfPingScheduler,
+  stopSelfPingScheduler,
   getErpSessionStatus: () => erpSessionStatus,
   setErpSessionStatus: (status) => {
     erpSessionStatus = status;

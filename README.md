@@ -380,34 +380,39 @@ The backend manages the ABES ERP authentication lifecycle server-side so clients
 
 ---
 
-## 11. ERP Session Keep-Alive Mechanism
+## 11. ERP Session Keep-Alive & Permanent Expiration Prevention
 
-The ABES ERP session expires after an idle period of inactivity (typically 20–30 minutes). To keep the authorized ERP session alive during continuous operation without manual cookie updates:
+The ABES ERP system runs on Microsoft IIS / ASP.NET Web Forms. ASP.NET implements a **sliding expiration timeout** for session state (typically 5 to 15 minutes of inactivity). If no requests are received during this window, IIS drops the session. Once dropped, that session cookie is invalidated on the server.
 
-### How It Works
-1. **Background Scheduler**: When the Node.js backend starts with valid session credentials, it initializes a non-blocking scheduler (`startKeepAliveScheduler()`).
-2. **Startup Delay**: It waits 30 seconds (`ERP_KEEPALIVE_STARTUP_DELAY_MS`) after boot before issuing the initial ping, preventing server boot contention.
-3. **Periodic Authorized Ping**: Every configurable interval (`ERP_KEEPALIVE_INTERVAL_MINUTES`, default 10 minutes), the server sends a lightweight GET request with server-side `MyAuth` and `ASP.NET_SessionId` cookies to:
-   ```
-   https://erp.abes.ac.in/Home/Student/Default.aspx
-   ```
-4. **Concurrency Protection**: If a keep-alive request is currently executing, subsequent scheduled runs are skipped automatically (`keepAliveInProgress` flag).
-5. **Session Expiry Detection**: The system evaluates responses using multi-factor detection:
-   - **Active (HTTP 200)**: Student dashboard HTML loaded without login forms.
-   - **Expired (HTTP 301/302)**: Redirects targeting `Login.aspx`.
-   - **Expired (HTTP 200 Login HTML)**: HTML containing login inputs (`txtUserName`, `txtPassword`).
-   - **Expired (HTTP 401 / 403)**: Access denied.
-   - **Transient (5xx or Timeout)**: Marked as `temporarily_unavailable` without destroying credentials.
-6. **Instant Pre-Flight Rejection**: When `erpSessionStatus` is `expired`, `/api/profile/:rollNumber` rejects requests immediately with HTTP 401, prompting administrators to update credentials.
-7. **Zero Security Bypass**: The keep-alive strictly uses the authorized session established by the student/staff account holder.
+To guarantee that your deployed session **never expires**, the application runs a high-frequency background keep-alive heartbeat and self-healing engine:
+
+### How It Works:
+1. **High-Frequency Sliding Heartbeat (Every 60 Seconds)**:
+   - The scheduler runs every **60 seconds** (`ERP_KEEPALIVE_INTERVAL_SECONDS=60`, default 1 minute).
+   - This touches the ASP.NET session state handler continuously, resetting the IIS sliding expiration timer back to 0 every minute.
+   - The session never reaches the inactivity threshold and stays alive 24/7/365.
+2. **Instant Startup Touch (2 Seconds)**:
+   - When the container boots on Railway or restarts after a deploy, the initial keep-alive ping runs in **2 seconds** (`ERP_KEEPALIVE_STARTUP_DELAY_MS=2000`) rather than 30 seconds, immediately refreshing the session.
+3. **Automated Self-Healing / Auto-Reauthentication**:
+   - If `ERP_USERNAME` and `ERP_PASSWORD` are configured in Railway environment variables:
+     When any session drop or expiration is detected, the server automatically executes a background re-authentication flight (`performErpLogin()`), retrieves fresh cookies, and restores `erpSessionStatus = 'active'` seamlessly without downtime.
+4. **Transparent In-Flight Retry**:
+   - If an upstream request momentarily encounters an expired session while user requests arrive, the server transparently re-authenticates and retries the fetch within the same request cycle.
+5. **Railway Container Anti-Sleep / Anti-Idling**:
+   - Railway deployments automatically provide `RAILWAY_PUBLIC_DOMAIN` or `RAILWAY_STATIC_URL`.
+   - The server detects this domain and dispatches an internal self-heartbeat ping to `/api/health` every 5 minutes, preventing Railway from putting the container into a cold sleep state.
+6. **In-Memory Cookie Sliding Extension**:
+   - The server's `ErpCookieJar` actively slides and preserves session cookies in memory upon every successful request, preventing premature local eviction.
 
 ### Configuration
 | Variable | Default | Description |
 | :--- | :--- | :--- |
-| `ERP_KEEPALIVE_INTERVAL_MINUTES` | `10` | Interval in minutes between heartbeat checks |
-| `ERP_TIMEOUT_MS` | `10000` | Timeout in milliseconds for ERP requests |
-| `ERP_KEEPALIVE_STARTUP_DELAY_MS` | `30000` | Delay before the initial keep-alive run |
+| `ERP_KEEPALIVE_INTERVAL_SECONDS` | `60` | Heartbeat interval in seconds (default: 60s) |
+| `ERP_KEEPALIVE_INTERVAL_MINUTES` | `1` | Heartbeat interval in minutes (default: 1m) |
+| `ERP_KEEPALIVE_STARTUP_DELAY_MS` | `2000` | Delay before initial keep-alive run (default: 2000ms) |
+| `ERP_TIMEOUT_MS` | `10000` | Timeout in milliseconds for upstream ERP requests |
 | `ERP_KEEPALIVE_URL` | `https://erp.abes.ac.in/Home/Student/Default.aspx` | Approved lightweight ERP page |
+| `SELF_PING_INTERVAL_MINUTES` | `5` | Anti-sleep self-ping interval for cloud containers |
 
 ---
 
@@ -429,14 +434,21 @@ The application is completely self-contained and compatible with any platform su
    - (Optional) `PORT` = `3000`
 6. Click **Deploy**.
 
-### Option B: Railway
+### Option B: Railway (Permanent 24/7 Deployment)
 1. Sign up on [railway.app](https://railway.app).
 2. Click **New Project** &rarr; **Deploy from GitHub repo**.
 3. Select your repository.
-4. In the service settings, go to **Variables** and add:
-   - `ERP_MYAUTH`
-   - `ERP_ASP_NET_SESSION_ID`
-5. Deploy.
+4. In the service settings, go to **Variables** and configure either:
+   - **Recommended (100% Zero-Touch Permanent Autorenewal)**:
+     - `ERP_USERNAME` = `<your_erp_username>`
+     - `ERP_PASSWORD` = `<your_erp_password>`
+     *(The server logs in automatically and continuously self-heals in the background)*
+   - **Alternative (Pre-Authorized Session Cookies)**:
+     - `ERP_MYAUTH` = `<your_myauth_cookie>`
+     - `ERP_ASP_NET_SESSION_ID` = `<your_asp_net_session_id_cookie>`
+     - `ERP_KEEPALIVE_INTERVAL_SECONDS` = `60`
+     *(The 60-second keep-alive heartbeat will keep the ASP.NET sliding session alive continuously)*
+5. Deploy. Railway automatically sets `RAILWAY_PUBLIC_DOMAIN`, enabling container anti-sleep heartbeats.
 
 ### Option C: Fly.io
 1. Install Fly CLI: `curl -L https://fly.io/install.sh | sh`
