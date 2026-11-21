@@ -427,21 +427,20 @@ body {
 .brand-crest {
   width: 112px;
   height: 112px;
-  background: #000000;
+  background: transparent;
   border-radius: var(--radius-full);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
+  box-shadow: none;
   border: none;
   padding: 0;
   overflow: hidden;
-  transition: transform var(--transition-normal), box-shadow var(--transition-normal), filter var(--transition-normal);
+  transition: transform var(--transition-normal);
   user-select: none;
 }
 .brand-crest:hover {
   transform: scale(1.05);
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
 }
 .brand-logo-img {
   width: 100%;
@@ -449,7 +448,12 @@ body {
   object-fit: cover;
   border-radius: 50%;
   display: block;
-  transition: filter var(--transition-normal);
+  filter: invert(1);
+  mix-blend-mode: multiply;
+  transition: filter 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform var(--transition-normal);
+}
+.brand-crest:hover .brand-logo-img {
+  filter: invert(1) drop-shadow(0 4px 14px rgba(14, 41, 75, 0.25));
 }
 .crest-icon {
   width: 100%;
@@ -950,27 +954,6 @@ body {
   color: #64748b;
   letter-spacing: 0.04em;
 }
-.mb-logo-circle {
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: none;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
-  display: inline-block;
-  flex-shrink: 0;
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  pointer-events: none;
-}
-.made-by-ghost-fleet:hover .mb-logo-circle {
-  transform: scale(1.15) rotate(6deg);
-}
-[data-theme="dark"] .mb-logo-circle {
-  border: none;
-  mix-blend-mode: screen;
-  box-shadow: none;
-  filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.4));
-}
 .made-by-ghost-fleet .mb-brand {
   font-weight: 900;
   color: var(--primary-navy);
@@ -1353,14 +1336,14 @@ body {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: #000000;
+  background: transparent;
   border: 1.5px solid var(--ad-border);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
 .ad-insta-logo-img {
@@ -1369,6 +1352,20 @@ body {
   object-fit: cover;
   border-radius: 50%;
   display: block;
+  filter: invert(1);
+  mix-blend-mode: multiply;
+  transition: filter 0.4s ease;
+}
+
+[data-theme="dark"] .ad-insta-logo-ring {
+  background: transparent;
+  border-color: var(--ad-border);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] .ad-insta-logo-img {
+  filter: none;
+  mix-blend-mode: screen;
 }
 
 .ad-insta-svg {

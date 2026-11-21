@@ -1125,7 +1125,7 @@ app.all('/api/*', (req, res) => {
 });
 
 app.get(['/insta', '/instagram'], (req, res) => {
-  const target = process.env.INSTAGRAM_URL || 'https://www.instagram.com/';
+  const target = process.env.INSTAGRAM_URL || 'https://www.instagram.com/ghost_fleet_?dmpr=dW96Mmc5ZXViZm44';
   res.redirect(target);
 });
 
