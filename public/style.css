@@ -40,22 +40,22 @@
                       box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Dark Mode Theme Variables */
+/* Dark Mode Theme Variables (Pure OLED Black Night Mode) */
 [data-theme="dark"] {
   --primary-navy: #60a5fa;
   --primary-blue: #3b82f6;
   --primary-light: #93c5fd;
   --accent-gold: #f59e0b;
   --accent-gold-light: rgba(245, 158, 11, 0.15);
-  --bg-gradient-start: #0a0e1a;
-  --bg-gradient-end: #05070d;
-  --card-bg: #0f1626;
-  --input-bg: #151e33;
-  --input-border: #263552;
+  --bg-gradient-start: #000000;
+  --bg-gradient-end: #000000;
+  --card-bg: #09090b;
+  --input-bg: #121215;
+  --input-border: #27272a;
   --text-primary: #f8fafc;
   --text-secondary: #cbd5e1;
-  --text-muted: #94a3b8;
-  --border-color: #1e293d;
+  --text-muted: #a1a1aa;
+  --border-color: #1e1e24;
   --border-focus: #38bdf8;
   --error-bg: rgba(239, 68, 68, 0.12);
   --error-border: rgba(239, 68, 68, 0.3);
@@ -63,14 +63,14 @@
   --success-bg: rgba(34, 197, 94, 0.12);
   --success-border: rgba(34, 197, 94, 0.3);
   --success-text: #86efac;
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.5);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4);
-  --shadow-lg: 0 10px 25px -5px rgb(0 0 0 / 0.6), 0 8px 10px -6px rgb(0 0 0 / 0.4);
-  --shadow-xl: 0 20px 35px -5px rgb(0 0 0 / 0.8), 0 0 0 1px rgba(255, 255, 255, 0.06);
-  --notice-bg: rgba(16, 22, 38, 0.75);
-  --btn-secondary-bg: #151e33;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.8);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.7), 0 2px 4px -2px rgb(0 0 0 / 0.6);
+  --shadow-lg: 0 10px 25px -5px rgb(0 0 0 / 0.9), 0 8px 10px -6px rgb(0 0 0 / 0.7);
+  --shadow-xl: 0 20px 35px -5px rgb(0 0 0 / 0.98), 0 0 0 1px rgba(255, 255, 255, 0.08);
+  --notice-bg: rgba(18, 18, 22, 0.85);
+  --btn-secondary-bg: #141418;
   --btn-secondary-text: #f8fafc;
-  --photo-frame-border: #1e293d;
+  --photo-frame-border: #27272a;
 }
 
 /* Circular View Transition for Whole-Page Dark/Light Shift */
@@ -277,14 +277,14 @@ body,
 }
 [data-theme="dark"] .brand-crest .brand-logo-img {
   mix-blend-mode: screen;
-  filter: drop-shadow(0 0 16px rgba(56, 189, 248, 0.35));
+  filter: drop-shadow(0 0 18px rgba(56, 189, 248, 0.4));
 }
 [data-theme="dark"] .brand-crest:hover .brand-logo-img {
-  filter: drop-shadow(0 0 26px rgba(56, 189, 248, 0.65));
+  filter: drop-shadow(0 0 28px rgba(56, 189, 248, 0.75));
 }
 [data-theme="dark"] .system-status-badge {
-  background: #141d30;
-  border-color: #23314a;
+  background: #101014;
+  border-color: #27272a;
   color: #cbd5e1;
 }
 [data-theme="dark"] .main-card::before {
@@ -332,10 +332,10 @@ body,
   color: #38bdf8;
 }
 [data-theme="dark"] .instagram-btn {
-  background: #141d30;
-  border-color: #23314a;
+  background: #101014;
+  border-color: #27272a;
   color: #f8fafc;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6);
 }
 [data-theme="dark"] .made-by-ghost-fleet .mb-prefix {
   color: #94a3b8;
@@ -347,10 +347,10 @@ body,
   text-shadow: 0 0 20px rgba(56, 189, 248, 0.35);
 }
 [data-theme="dark"] .photo-frame {
-  background: #141d30;
+  background: #101014;
   border-color: var(--photo-frame-border);
-  outline-color: #23314a;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+  outline-color: #27272a;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.8);
 }
 [data-theme="dark"] .meta-label {
   color: #94a3b8;
@@ -364,7 +364,7 @@ body,
   color: var(--btn-secondary-text);
 }
 [data-theme="dark"] .btn-secondary:hover:not(:disabled) {
-  background: #1e293b;
+  background: #1c1c22;
   border-color: #38bdf8;
   color: #38bdf8;
 }
@@ -379,12 +379,12 @@ body,
   color: #fecaca;
 }
 [data-theme="dark"] .admin-tip {
-  background: #141d30;
+  background: #101014;
   border-left: 3px solid #d4af37;
   color: #cbd5e1;
 }
 [data-theme="dark"] .admin-tip code {
-  background: #0b1120;
+  background: #000000;
   color: #38bdf8;
 }
 
@@ -425,14 +425,14 @@ body {
   gap: 10px;
 }
 .brand-crest {
-  width: 82px;
-  height: 82px;
+  width: 112px;
+  height: 112px;
   background: #000000;
   border-radius: var(--radius-full);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
   border: none;
   padding: 0;
   overflow: hidden;
@@ -440,8 +440,8 @@ body {
   user-select: none;
 }
 .brand-crest:hover {
-  transform: scale(1.06);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+  transform: scale(1.05);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
 }
 .brand-logo-img {
   width: 100%;
@@ -869,6 +869,10 @@ body {
   color: var(--text-muted);
 }
 @media (max-width: 480px) {
+  .brand-crest {
+    width: 96px;
+    height: 96px;
+  }
   .main-card {
     padding: 24px 18px;
   }
@@ -1043,34 +1047,34 @@ body {
 }
 
 [data-theme="dark"] {
-  --ad-backdrop: rgba(0, 0, 0, 0.78);
-  --ad-card-bg: #111827;
-  --ad-border: #1f293d;
-  --ad-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.08);
+  --ad-backdrop: rgba(0, 0, 0, 0.88);
+  --ad-card-bg: #0d0d11;
+  --ad-border: #27272a;
+  --ad-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.95), 0 0 0 1px rgba(255, 255, 255, 0.08);
   --ad-text-primary: #f8fafc;
-  --ad-text-secondary: #94a3b8;
-  --ad-text-muted: #64748b;
+  --ad-text-secondary: #a1a1aa;
+  --ad-text-muted: #71717a;
   --ad-accent: #38bdf8;
-  --ad-pill-bg: #1a2333;
-  --ad-pill-border: #26354d;
+  --ad-pill-bg: #18181b;
+  --ad-pill-border: #27272a;
   --ad-pill-text: #f8fafc;
   --ad-pill-dot: #38bdf8;
-  --ad-feat-bg: #162032;
-  --ad-feat-border: #24334a;
+  --ad-feat-bg: #141418;
+  --ad-feat-border: #27272a;
   --ad-feat-text: #f8fafc;
-  --ad-feat-sub: #94a3b8;
-  --ad-insta-bg: #162032;
-  --ad-insta-border: #24334a;
-  --ad-insta-ring: #24334a;
+  --ad-feat-sub: #a1a1aa;
+  --ad-insta-bg: #141418;
+  --ad-insta-border: #27272a;
+  --ad-insta-ring: #27272a;
   --ad-insta-icon: #ffffff;
   --ad-cta-bg: #ffffff;
-  --ad-cta-text: #0f172a;
-  --ad-cta-hover: #f1f5f9;
-  --ad-dismiss-color: #94a3b8;
+  --ad-cta-text: #09090b;
+  --ad-cta-hover: #f4f4f5;
+  --ad-dismiss-color: #a1a1aa;
   --ad-dismiss-hover: #ffffff;
-  --ad-close-bg: #162032;
-  --ad-close-border: #24334a;
-  --ad-close-color: #94a3b8;
+  --ad-close-bg: #141418;
+  --ad-close-border: #27272a;
+  --ad-close-color: #a1a1aa;
   --ad-close-hover: #ffffff;
 }
 
@@ -1547,12 +1551,12 @@ body {
   border: 0;
 }
 [data-theme="dark"] .form-input {
-  background: #141d30;
-  border-color: #263552;
+  background: #121215;
+  border-color: #27272a;
   color: #f8fafc;
 }
 [data-theme="dark"] .form-input:focus {
-  background: #18233a;
+  background: #18181b;
   border-color: #38bdf8;
   box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25);
 }
@@ -1563,7 +1567,7 @@ body {
   color: #cbd5e1;
 }
 [data-theme="dark"] .spinner {
-  border-color: #1e293b;
+  border-color: #27272a;
   border-top-color: #38bdf8;
 }
 
@@ -1596,7 +1600,7 @@ body.is-devtools-locked .promo-modal-backdrop {
   align-items: center;
   justify-content: center;
   padding: 16px;
-  background: rgba(8, 12, 22, 0.92);
+  background: rgba(0, 0, 0, 0.94);
   backdrop-filter: blur(24px) saturate(180%);
   -webkit-backdrop-filter: blur(24px) saturate(180%);
   animation: secBackdropFade 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -1612,12 +1616,12 @@ body.is-devtools-locked .promo-modal-backdrop {
   width: min(440px, calc(100vw - 32px));
   margin: auto;
   box-sizing: border-box;
-  background: #0c1220;
+  background: #09090b;
   border: 1px solid rgba(239, 68, 68, 0.45);
   border-radius: 20px;
   padding: 28px 22px 24px;
-  box-shadow: 0 25px 65px -10px rgba(0, 0, 0, 0.85),
-              0 0 40px rgba(239, 68, 68, 0.18);
+  box-shadow: 0 25px 65px -10px rgba(0, 0, 0, 0.95),
+              0 0 40px rgba(239, 68, 68, 0.22);
   text-align: center;
   color: #f8fafc;
   animation: secCardDrop 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
