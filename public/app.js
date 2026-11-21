@@ -77,20 +77,20 @@ document.addEventListener('DOMContentLoaded', () => {
         if (data.sessionConfigured) {
           if (data.erpSession === 'active') {
             systemStatus.className = 'system-status-badge status-online';
-            statusLabel.textContent = 'ERP Session Active';
+            statusLabel.textContent = 'Api Session Active';
           } else if (data.erpSession === 'expired') {
             systemStatus.className = 'system-status-badge status-warning';
             statusLabel.textContent = 'API Session Expired';
           } else if (data.erpSession === 'temporarily_unavailable') {
             systemStatus.className = 'system-status-badge status-warning';
-            statusLabel.textContent = 'ERP Unavailable';
+            statusLabel.textContent = 'Api Unavailable';
           } else {
             systemStatus.className = 'system-status-badge status-online';
-            statusLabel.textContent = 'ERP Session Configured';
+            statusLabel.textContent = 'Api Session Configured';
           }
         } else {
           systemStatus.className = 'system-status-badge status-warning';
-          statusLabel.textContent = 'ERP Session Not Configured';
+          statusLabel.textContent = 'Api Session Not Configured';
         }
       } else {
         throw new Error('Health check returned non-200');
@@ -230,7 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const imageBlob = await response.blob();
         showResult(imageBlob, trimmedRoll);
         systemStatus.className = 'system-status-badge status-online';
-        statusLabel.textContent = 'ERP Session Active';
+        statusLabel.textContent = 'Api Session Active';
       } else {
         let errData = {};
         try {
