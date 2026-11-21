@@ -427,20 +427,21 @@ body {
 .brand-crest {
   width: 112px;
   height: 112px;
-  background: transparent;
+  background: #000000;
   border-radius: var(--radius-full);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: none;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
   border: none;
   padding: 0;
   overflow: hidden;
-  transition: transform var(--transition-normal);
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
   user-select: none;
 }
 .brand-crest:hover {
   transform: scale(1.05);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
 }
 .brand-logo-img {
   width: 100%;
@@ -448,12 +449,7 @@ body {
   object-fit: cover;
   border-radius: 50%;
   display: block;
-  filter: invert(1);
-  mix-blend-mode: multiply;
-  transition: filter 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform var(--transition-normal);
-}
-.brand-crest:hover .brand-logo-img {
-  filter: invert(1) drop-shadow(0 4px 14px rgba(14, 41, 75, 0.25));
+  transition: filter var(--transition-normal);
 }
 .crest-icon {
   width: 100%;
@@ -1336,14 +1332,14 @@ body {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: transparent;
+  background: #000000;
   border: 1.5px solid var(--ad-border);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
   overflow: hidden;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
 }
 
 .ad-insta-logo-img {
@@ -1352,20 +1348,6 @@ body {
   object-fit: cover;
   border-radius: 50%;
   display: block;
-  filter: invert(1);
-  mix-blend-mode: multiply;
-  transition: filter 0.4s ease;
-}
-
-[data-theme="dark"] .ad-insta-logo-ring {
-  background: transparent;
-  border-color: var(--ad-border);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-}
-
-[data-theme="dark"] .ad-insta-logo-img {
-  filter: none;
-  mix-blend-mode: screen;
 }
 
 .ad-insta-svg {
