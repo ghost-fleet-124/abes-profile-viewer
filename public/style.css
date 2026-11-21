@@ -269,6 +269,7 @@ body,
 /* Dark Theme Specific Element Styling */
 [data-theme="dark"] .brand-title {
   color: #ffffff;
+  text-shadow: 0 0 20px rgba(56, 189, 248, 0.55), 0 0 35px rgba(56, 189, 248, 0.3);
 }
 [data-theme="dark"] .brand-crest {
   background: transparent;
@@ -473,11 +474,20 @@ body {
   margin-bottom: 2px;
 }
 .brand-title {
-  font-size: 1.65rem;
-  font-weight: 700;
+  font-family: 'Orbitron', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 2.1rem;
+  font-weight: 900;
   color: var(--primary-navy);
-  letter-spacing: -0.02em;
+  letter-spacing: 0.08em;
   line-height: 1.2;
+  text-transform: uppercase;
+  user-select: none;
+}
+.brand-title i {
+  font-style: italic;
+}
+.brand-title b {
+  font-weight: 900;
 }
 .brand-subtitle {
   font-size: 0.86rem;
